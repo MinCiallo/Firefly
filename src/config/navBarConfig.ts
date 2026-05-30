@@ -31,7 +31,7 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 	// 我的及其子菜单
 	links.push({
 		name: "我的",
-		url: "/my/",
+		url: "/about/",
 		icon: "material-symbols:person",
 		children: [
 			// 根据配置决定是否添加相册，在siteConfig关闭pages.gallery时导航栏不显示相册
