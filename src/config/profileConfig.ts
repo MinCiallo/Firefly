@@ -34,9 +34,9 @@ export const profileConfig: ProfileConfig = {
 			showName: false,
 		},
 		{
-			name: "Email",
+			name: "Steam",
 			icon: "simple-icons:steam",
-			url: "605921325@qq.com",
+			url: "https://steamcommunity.com/id/minciallo/",
 			showName: false,
 		},
 		{
