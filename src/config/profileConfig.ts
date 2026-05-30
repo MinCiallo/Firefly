@@ -35,7 +35,7 @@ export const profileConfig: ProfileConfig = {
 		},
 		{
 			name: "Email",
-			icon: "fa7-solid:envelope",
+			icon: "simple-icons:steam",
 			url: "605921325@qq.com",
 			showName: false,
 		},
