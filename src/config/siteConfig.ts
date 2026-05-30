@@ -7,21 +7,21 @@ const SITE_LANG = "zh_CN";
 
 export const siteConfig: SiteConfig = {
 	// 站点标题
-	title: "鲸鱼做飞艇",
+	title: "铭のBlog",
 
 	// 站点副标题
-	subtitle: "jyzft",
+	subtitle: "一个日常的博客",
 
 	// 站点 URL
-	site_url: "https://394000.xyz",
+	site_url: "https://www.minciallo.top",
 
 	// 站点描述
 	description:
-		"这是我的第一个网站",
+		"一个普普通通的日常博客",
 
 	// 站点关键词
 	keywords: [
-		"jyzft",
+		"minciallo",
 		"Fuwari",
 		"Astro",
 		"ACGN",
@@ -33,7 +33,7 @@ export const siteConfig: SiteConfig = {
 	// 主题色
 	themeColor: {
 		// 主题色的默认色相，范围从 0 到 360。例如：红色：0，青色：200，蓝绿色：250，粉色：345
-		hue: 165,
+		hue: 0,
 		// 是否对访问者隐藏主题色选择器
 		fixed: false,
 		// 默认模式："light" 亮色，"dark" 暗色，"system" 跟随系统
@@ -76,10 +76,10 @@ export const siteConfig: SiteConfig = {
 		logo: {
 			type: "image",
 			value: "assets/images/firefly.png",
-			alt: "🍀",
+			alt: "Logo",
 		},
 		// 导航栏标题
-		title: "鲸鱼做飞艇",
+		title: "Minciallo",
 		// 全宽导航栏，导航栏是否占满屏幕宽度
 		widthFull: false,
 		// 导航菜单对齐方式，left：左对齐，center：居中
@@ -91,7 +91,7 @@ export const siteConfig: SiteConfig = {
 	},
 
 	// 站点开始日期，用于统计运行天数
-	siteStartDate: "2026-05-02",
+	siteStartDate: "2026-05-31",
 
 	// 站点时区（IANA 时区字符串），用于格式化bangumi、rss里的构建日期时间等等..
 	// 示例："Asia/Shanghai", "UTC", 如果为空，则按照构建服务器的时区进行时区转换
@@ -133,11 +133,11 @@ export const siteConfig: SiteConfig = {
 		// 赞助页面开关
 		sponsor: true,
 		// 留言板页面开关，需要配置评论系统
-		guestbook: true,
+		guestbook: false,
 		// 番组计划页面开关，含追番、游戏、书籍和音乐，dev调试时只获取一页数据，build才会获取全部数据
-		bangumi: true,
+		bangumi: false,
 		// 相册页面开关
-		gallery: true,
+		gallery: false,
 	},
 
 	// 分类导航栏开关，在首页和归档页顶部显示分类快捷导航
