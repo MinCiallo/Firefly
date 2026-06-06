@@ -10,7 +10,7 @@ export const siteConfig: SiteConfig = {
 	title: "铭のBlog",
 
 	// 站点副标题
-	subtitle: "一个日常的博客",
+	subtitle: "铭的博客",
 
 	// 站点 URL
 	site_url: "https://www.minciallo.top",
