@@ -33,10 +33,10 @@ export const friendsConfig: FriendLink[] = [
 		enabled: true, // 是否启用
 	},
 	{
-		title: "帆船（服）",
+		title: "帆船",
 		imgurl: "https://manage.fcaugame.cn/p/a.png",
-		desc: "帆船和他的AmongUs",
-		siteurl: "https://au.fanchuanovo.cn",
+		desc: "一个神秘至极的博客。",
+		siteurl: "https://fanchuanovo.cn",
 		tags: ["Blog"],
 		weight: 9,
 		enabled: true,
