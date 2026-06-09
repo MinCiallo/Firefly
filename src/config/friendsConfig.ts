@@ -23,10 +23,10 @@ export const friendsPageConfig: FriendsPageConfig = {
 // 友链配置
 export const friendsConfig: FriendLink[] = [
 	{
-		title: "Feng",
+		title: "清风风のBlog",
 		imgurl:
 			"https://avatars.githubusercontent.com/u/151742581?v=4",
-		desc: "代码林间听 Feng 语",
+		desc: "愿你我循此苦旅，终抵繁星",
 		siteurl: "https://qingfengawa.top/",
 		tags: ["Blog"],
 		weight: 10, // 权重，数字越大排序越靠前
