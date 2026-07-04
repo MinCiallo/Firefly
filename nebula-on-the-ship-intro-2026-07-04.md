@@ -1,0 +1,114 @@
+---
+title: "Among Us Mod「Nebula on the Ship」介绍 —— 星云舰起航"
+published: 2026-07-04
+description: "Nebula on the Ship（星云舰）是一款为 Among Us 带来大量新身份、新机制、新玩法的模组。本文带你全面了解 NOS 的核心特色与玩法。"
+tags: [Among Us, Mod, Nebula on the Ship, 游戏模组]
+category: 游戏
+author: Dolly1016
+---
+
+# Among Us Mod「Nebula on the Ship」介绍 —— 星云舰起航
+
+## 什么是 Nebula on the Ship？
+
+**Nebula on the Ship**（简称 **NOS**，中文社区常称为「星云舰」）是一款由日本开发者 **Dolly1016** 制作的 Among Us 大型模组。它以增加大量新身份、新机制、新玩法、新模式为核心，为原版 Among Us 注入了极为丰富的策略深度与可玩性。
+
+> 本模组与 Among Us 或 Innersloth LLC 无关，内容未经 Innersloth LLC 认可或赞助。
+
+## 安装方式
+
+NOS 提供专用的安装器，用户只需在 Steam 上拥有 Among Us（PC 版），即可通过安装器一键安装。不支持 Android、iOS、Switch 等平台。
+
+1. 从 [GitHub Releases](https://github.com/Dolly1016/Nebula/releases) 下载安装器
+2. 在 Steam 中找到 Among Us 的安装文件夹并复制一份，重命名为「Among Us Nebula」等
+3. 运行安装器完成安装
+4. 首次启动可能需要约 1 分钟
+
+## 核心特色
+
+### 三大阵营
+
+NOS 的标准模式分为三大阵营：
+
+| 阵营 | 胜利条件 |
+|------|----------|
+| **船员阵营** | 所有船员完成全部任务 / 所有伪装者死亡 / 最后一名伪装者掉线 |
+| **伪装者阵营** | 存活船员数 ≤ 存活伪装者数 / 船员未在破坏倒计时结束前完成修复 |
+| **第三方阵营** | 完成自身身份目标 / 恋人与第三方一同获胜 / 除第三方外所有人死亡 |
+
+此外，房主强制结束游戏、迷你船员死亡等情况下可能出现无人获胜的局面。
+
+### 特技系统
+
+特技是 NOS 最具特色的机制之一。在标准模式地图上，特技以**花朵**的形式刷新：
+
+- **蓝色花朵**：仅船员 / 第三方可使用
+- **红色花朵**：仅伪装者可使用（可在选项中调整）
+
+特技种类丰富，涵盖通用与阵营专属技能：
+
+| 分类 | 特技名称 |
+|------|----------|
+| 通用 | 敏捷、独裁、紧急会议、镜像、颠倒、逆转、泥足、钩索枪、融入、激进、魔法水晶、尸检、替身、算计、搬迁 |
+| 非船员用 | 泡泡枪、天动万象、风向标-赤、风向标-青、眩晕、保守、愤怒、空弹 |
+
+### 指令系统
+
+按住 `Ctrl` 键可打开指令页面，常用快捷键包括：
+
+- `Ctrl + F5`：无效游戏（强制结束，仅房主可用）
+- `Ctrl + /`：隐藏 / 显示 HUD
+- `Ctrl + Enter`：指令终端
+- `Ctrl + F5`：开启 / 关闭游戏内特写
+
+### 特写
+
+让所有玩家看到你的皮肤、名称和称号，秀出你的个性搭配。
+
+### 成就与表情包
+
+完成对应任务后可获得成就。默认按 `R` 键发送表情包，增强游戏内的互动趣味。
+
+## 游戏模式
+
+### 标准模式
+
+经典的三阵营对抗模式，在 NOS 丰富的身份池与特技系统的加持下，每一局都充满变数。
+
+### 自由模式
+
+适合调整预设、测试身份与机制。在自由模式中，你可以自由选择是否死亡、拥有何种特技、身份及附加能力。
+
+### 区域猜测
+
+给出某一地图的某个区域的图片，玩家需要在地图上点击猜测该区域的实际位置。越接近实际位置的玩家得分越高，最终得分最高者获胜——考验你对地图的熟悉程度。
+
+## 灵感与致谢
+
+NOS 在原创内容的基础上，继承了许多优秀 Among Us 模组的创意：
+
+- **[The Other Roles](https://github.com/Eisbison/TheOtherRoles)**：NOS 的灵感根源
+- **[TheOtherRoles: GM Edition](https://github.com/yukinogatari/TheOtherRoles-GM)**：Madmate 身份创意来源
+- **[Town Of Impostors](https://github.com/Town-of-Impostors/TownOfImpostors)**：Sniper、Necromancer、Mayor 身份创意来源
+- **[SuperNewRoles](https://github.com/SuperNewRoles/SuperNewRoles)**：SNR 联动，加入了 Collator、Justice、Alien、Effacer 等身份
+
+技术层面，NOS 使用 **[BepInEx](https://github.com/BepInEx)** 来挂钩游戏函数。
+
+插画由 **セオノ** 与 **Dolly** 绘制。
+
+## 社区与支持
+
+- **GitHub**：[github.com/Dolly1016/Nebula](https://github.com/Dolly1016/Nebula)
+- **官方 Wiki**：[dolly1016.github.io/NebulaWiki](https://dolly1016.github.io/NebulaWiki)
+- **Discord**：[discord.gg/kHNZD4pq9E](https://discord.gg/kHNZD4pq9E)
+- **开发者 Twitter**：[@NebulaOnTheShip](https://twitter.com/NebulaOnTheShip)
+- **邮箱**：nebula.on.the.ship@gmail.com
+- **赞助**：[Ko-fi](https://ko-fi.com/N4N31Y9TUW)
+
+---
+
+## 结语
+
+Nebula on the Ship 凭借海量的身份、精巧的特技系统与多样的游戏模式，在 Among Us 模组社区中独树一帜。如果你已经玩腻了原版 Among Us，不妨登上星云舰，体验一场全新的太空狼人杀之旅。
+
+> 本文基于 2026 年 7 月 4 日公开信息撰写，模组内容可能随版本更新而变化，请以官方 Wiki 和 GitHub 为准。
