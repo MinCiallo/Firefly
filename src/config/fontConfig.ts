@@ -69,6 +69,15 @@ export const fontConfig = {
 			weight: 600,
 			display: "swap" as const,
 		},
+
+		// 苹方 - PingFang SC（仅 macOS/iOS 可用，其他系统回退）
+		"pingfang": {
+			id: "pingfang",
+			name: "苹方",
+			src: "", // 系统字体无需 src
+			family: "PingFang SC",
+			display: "swap" as const,
+		},
 	},
 
 	// 全局字体回退
