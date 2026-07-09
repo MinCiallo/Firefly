@@ -78,6 +78,42 @@ export const fontConfig = {
 			family: "PingFang SC",
 			display: "swap" as const,
 		},
+
+		// Google Fonts - Noto Sans JP（日系无衬线）
+		"noto-sans-jp": {
+			id: "noto-sans-jp",
+			name: "Noto Sans JP",
+			src: "https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap",
+			family: "Noto Sans JP",
+			display: "swap" as const,
+		},
+
+		// Google Fonts - Noto Serif JP（日系衬线）
+		"noto-serif-jp": {
+			id: "noto-serif-jp",
+			name: "Noto Serif JP",
+			src: "https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500;700&display=swap",
+			family: "Noto Serif JP",
+			display: "swap" as const,
+		},
+
+		// Google Fonts - Kosugi Maru（日系可爱圆体）
+		"kosugi-maru": {
+			id: "kosugi-maru",
+			name: "Kosugi Maru",
+			src: "https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap",
+			family: "Kosugi Maru",
+			display: "swap" as const,
+		},
+
+		// Google Fonts - Yusei Magic（日系手写风）
+		"yusei-magic": {
+			id: "yusei-magic",
+			name: "Yusei Magic",
+			src: "https://fonts.googleapis.com/css2?family=Yusei+Magic&display=swap",
+			family: "Yusei Magic",
+			display: "swap" as const,
+		},
 	},
 
 	// 全局字体回退
