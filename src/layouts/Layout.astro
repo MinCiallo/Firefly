@@ -546,6 +546,32 @@ const siteLang = lang.replace("_", "-");
 
     <!-- Fancybox Manager -->
     <FancyboxManager />
+    <script>
+      // 将中文「的」替换为日文「の」
+      function replaceDe() {
+        const walker = document.createTreeWalker(
+          document.body,
+          NodeFilter.SHOW_TEXT,
+          {
+            acceptNode(node) {
+              const parent = node.parentElement;
+              if (!parent) return NodeFilter.FILTER_REJECT;
+              const tag = parent.tagName;
+              if (tag === 'SCRIPT' || tag === 'STYLE' || tag === 'CODE' || tag === 'PRE' || tag === 'INPUT' || tag === 'TEXTAREA') {
+                return NodeFilter.FILTER_REJECT;
+              }
+              return node.textContent?.includes('的') ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+            },
+          }
+        );
+        const nodes = [];
+        while (walker.nextNode()) nodes.push(walker.currentNode);
+        for (const node of nodes) {
+          node.textContent = node.textContent!.replace(/的/g, 'の');
+        }
+      }
+      document.addEventListener('astro:page-load', replaceDe);
+    </script>
   </body>
 </html>
 
