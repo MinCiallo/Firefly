@@ -572,6 +572,7 @@ const siteLang = lang.replace("_", "-");
           node.textContent = node.textContent!.replace(/的/g, 'の');
         }
       }
+      document.addEventListener('DOMContentLoaded', replaceDe);
       document.addEventListener('astro:page-load', replaceDe);
     </script>
   </body>
