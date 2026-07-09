@@ -114,6 +114,42 @@ export const fontConfig = {
 			family: "Yusei Magic",
 			display: "swap" as const,
 		},
+
+		// Google Fonts - Mochiy Pop One（日系泡泡萌体）
+		"mochiy-pop-one": {
+			id: "mochiy-pop-one",
+			name: "Mochiy Pop One",
+			src: "https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&display=swap",
+			family: "Mochiy Pop One",
+			display: "swap" as const,
+		},
+
+		// Google Fonts - M PLUS Rounded 1c（日系圆润萌体）
+		"m-plus-rounded-1c": {
+			id: "m-plus-rounded-1c",
+			name: "M PLUS Rounded 1c",
+			src: "https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@300;400;500;700&display=swap",
+			family: "M PLUS Rounded 1c",
+			display: "swap" as const,
+		},
+
+		// Google Fonts - Hachi Maru Pop（日系手写萌体）
+		"hachi-maru-pop": {
+			id: "hachi-maru-pop",
+			name: "Hachi Maru Pop",
+			src: "https://fonts.googleapis.com/css2?family=Hachi+Maru+Pop&display=swap",
+			family: "Hachi Maru Pop",
+			display: "swap" as const,
+		},
+
+		// Google Fonts - Potta One（日系软萌体）
+		"potta-one": {
+			id: "potta-one",
+			name: "Potta One",
+			src: "https://fonts.googleapis.com/css2?family=Potta+One&display=swap",
+			family: "Potta One",
+			display: "swap" as const,
+		},
 	},
 
 	// 全局字体回退
