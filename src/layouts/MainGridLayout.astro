@@ -49,6 +49,7 @@ interface Props {
 	postSlug?: string;
 	postCategory?: string;
 	headings?: MarkdownHeading[];
+	encrypted?: boolean;
 	bannerPostMeta?: {
 		title: string;
 		published: Date;
@@ -69,6 +70,7 @@ const {
 	postSlug,
 	postCategory,
 	headings = [],
+	encrypted = false,
 	bannerPostMeta,
 } = Astro.props;
 
@@ -202,6 +204,10 @@ const effectiveHasLeftComponents: boolean =
 	sidebarConfig.hasLeftComponents ||
 	(shouldAddLeftSidebar &&
 		sidebarLayoutConfig.leftComponents.some((comp) => comp.enable));
+
+// 文章页是否隐藏静态侧栏（由 sidebarConfig.hideSidebarOnPostPage 控制，缺省不隐藏）
+const hideSidebarOnPostPage: boolean =
+	(sidebarLayoutConfig as { hideSidebarOnPostPage?: boolean }).hideSidebarOnPostPage === true;
 
 // 使用effective值重新生成网格类
 // 当position为right且文章页临时显示左侧栏时，tabletSidebar应为right（保持显示主侧栏）
@@ -858,21 +864,26 @@ const bannerCarouselInterval = Math.max(
             */}
             {sidebarLayoutConfig.position !== "right" ? (
                 <>
-                    <div id="left-sidebar-wrapper" class="contents" style="contain: layout style paint;">
-                        {effectiveHasLeftComponents && (
-                            <SideBar
-                                side={effectiveIsBothSidebars ? "left" : undefined}
-                                class={sidebarClass}
-                                headings={headings}
-                            />
-                        )}
-                    </div>
+                    {sidebarLayoutConfig.enable ? (
+                        <div id="left-sidebar-wrapper" class="contents" data-hide-sidebar-on-post={hideSidebarOnPostPage ? "true" : "false"} style="contain: layout style paint;">
+                            {effectiveHasLeftComponents && (
+                                <SideBar
+                                    side={effectiveIsBothSidebars ? "left" : undefined}
+                                    class={sidebarClass}
+                                    headings={headings}
+                                    encrypted={encrypted}
+                                />
+                            )}
+                        </div>
+                    ) : (
+                        <div id="left-sidebar-wrapper" class="hidden"></div>
+                    )}
                     <div id="left-sidebar-dynamic" class="hidden transition-swup-fade"></div>
                 </>
             ) : (
                 <div id="left-sidebar-dynamic" class="contents transition-swup-fade">
                     {effectiveIsBothSidebars && effectiveHasLeftComponents && (
-						<SideBar side="left" class={sidebarClass} headings={headings}></SideBar>
+						<SideBar side="left" class={sidebarClass} headings={headings} encrypted={encrypted}></SideBar>
                     )}
                 </div>
             )}
@@ -906,17 +917,21 @@ const bannerCarouselInterval = Math.max(
             */}
             {(sidebarLayoutConfig.position === "both" || sidebarLayoutConfig.position === "right") ? (
                 <>
-                    <div id="right-sidebar-static" class="contents">
-                        {(effectiveIsBothSidebars || sidebarLayoutConfig.position === "right") && effectiveHasRightComponents && (
-							<SideBar side="right" class={rightSidebarClass} headings={headings}></SideBar>
-                        )}
-                    </div>
+                    {sidebarLayoutConfig.enable ? (
+                        <div id="right-sidebar-static" class="contents" data-hide-sidebar-on-post={hideSidebarOnPostPage ? "true" : "false"}>
+                            {(effectiveIsBothSidebars || sidebarLayoutConfig.position === "right") && effectiveHasRightComponents && (
+                                                              <SideBar side="right" class={rightSidebarClass} headings={headings} encrypted={encrypted}></SideBar>
+                            )}
+                        </div>
+                    ) : (
+                        <div id="right-sidebar-static" class="hidden"></div>
+                    )}
                     <div id="right-sidebar-dynamic" class="hidden transition-swup-fade"></div>
                 </>
             ) : (
                 <div id="right-sidebar-dynamic" class="contents transition-swup-fade">
                     {effectiveIsBothSidebars && effectiveHasRightComponents && (
-						<SideBar side="right" class={rightSidebarClass} headings={headings}></SideBar>
+						<SideBar side="right" class={rightSidebarClass} headings={headings} encrypted={encrypted}></SideBar>
                     )}
                 </div>
             )}
@@ -924,7 +939,7 @@ const bannerCarouselInterval = Math.max(
             {/* 移动端底部组件 - 768px及以下显示 */}
             {sidebarLayoutConfig.mobileBottomComponents && sidebarLayoutConfig.mobileBottomComponents.length > 0 && (
                 <div id="mobile-bottom-sidebar" class="col-span-1 block md:hidden mt-4">
-					<SideBar side="bottom" headings={headings}></SideBar>
+					<SideBar side="bottom" headings={headings} encrypted={encrypted}></SideBar>
                 </div>
             )}
 
@@ -938,7 +953,7 @@ const bannerCarouselInterval = Math.max(
     </div>
 </div>
 
-<FloatingControls headings={headings} />
+<FloatingControls headings={headings} encrypted={encrypted} />
 
 
 </Layout>
