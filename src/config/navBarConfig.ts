@@ -31,6 +31,9 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 	// 我的及其子菜单
 	
 
+	// 相册
+	links.push(LinkPreset.Gallery);
+
 	// 关于及其子菜单
 	links.push({
 		name: "关于",
@@ -44,9 +47,6 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 			LinkPreset.About,
 		],
 	});
-
-	// 相册
-	links.push(LinkPreset.Gallery);
 
 	// 仅返回链接，其它导航搜索相关配置在模块顶层常量中独立导出
 	return { links } as NavBarConfig;
