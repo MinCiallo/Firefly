@@ -19,6 +19,7 @@ export const galleryConfig: GalleryConfig = {
 			description: "ましろ色シンフォニー SANA EDITION",
 			location: "纯白交响曲",
 			date: "2026-07-15",
+			cover: "sana3.jpg",
 			tags: ["纯白交响曲", "乾紗凪", "SANA"],
 		},
 	],
