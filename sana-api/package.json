@@ -1,0 +1,12 @@
+{
+  "name": "sana-wallpaper-api",
+  "version": "1.0.0",
+  "description": "纯交响曲 乾纱凪 (SANA) 壁纸 API",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
