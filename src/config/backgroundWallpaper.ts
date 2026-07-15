@@ -36,10 +36,28 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 	 * ],
 	 */
 	src: {
-		// 桌面背景图片（单张静态图）
-		desktop: "assets/images/DesktopWallpaper/sana1.avif",
-		// 移动背景图片（单张静态图）
-		mobile: "assets/images/MobileWallpaper/sana2.avif",
+		// 桌面背景图片（随机 SANA 图库）
+		desktop: [
+			"/images/sana/sana1.jpg",
+			"/images/sana/sana2.jpg",
+			"/images/sana/sana3.jpg",
+			"/images/sana/sana6.jpg",
+			"/images/sana/sana7.jpg",
+			"/images/sana/sana8.jpg",
+			"/images/sana/sana9.jpg",
+			"/images/sana/sana10.jpg",
+		],
+		// 移动背景图片（随机 SANA 图库）
+		mobile: [
+			"/images/sana/sana1.jpg",
+			"/images/sana/sana2.jpg",
+			"/images/sana/sana3.jpg",
+			"/images/sana/sana6.jpg",
+			"/images/sana/sana7.jpg",
+			"/images/sana/sana8.jpg",
+			"/images/sana/sana9.jpg",
+			"/images/sana/sana10.jpg",
+		],
 	},
 	// Banner模式特有配置
 	banner: {
