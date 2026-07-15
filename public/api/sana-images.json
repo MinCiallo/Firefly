@@ -2,7 +2,7 @@
   "name": "SANA",
   "character": "乾紗凪",
   "series": "ましろ色シンフォニー",
-  "images": [
+  "desktop": [
     "/images/sana/sana1.jpg",
     "/images/sana/sana2.jpg",
     "/images/sana/sana3.jpg",
@@ -11,5 +11,15 @@
     "/images/sana/sana8.jpg",
     "/images/sana/sana9.jpg",
     "/images/sana/sana10.jpg"
+  ],
+  "mobile": [
+    "/images/sana/mobile1.jpg",
+    "/images/sana/mobile2.jpg",
+    "/images/sana/mobile3.jpg",
+    "/images/sana/mobile4.jpg",
+    "/images/sana/mobile5.jpg",
+    "/images/sana/mobile6.jpg",
+    "/images/sana/mobile7.jpg",
+    "/images/sana/mobile8.jpg"
   ]
 }

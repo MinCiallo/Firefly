@@ -47,16 +47,16 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 			"/images/sana/sana9.jpg",
 			"/images/sana/sana10.jpg",
 		],
-		// 移动背景图片（随机 SANA 图库）
+		// 移动背景图片（竖屏 SANA 图库）
 		mobile: [
-			"/images/sana/sana1.jpg",
-			"/images/sana/sana2.jpg",
-			"/images/sana/sana3.jpg",
-			"/images/sana/sana6.jpg",
-			"/images/sana/sana7.jpg",
-			"/images/sana/sana8.jpg",
-			"/images/sana/sana9.jpg",
-			"/images/sana/sana10.jpg",
+			"/images/sana/mobile1.jpg",
+			"/images/sana/mobile2.jpg",
+			"/images/sana/mobile3.jpg",
+			"/images/sana/mobile4.jpg",
+			"/images/sana/mobile5.jpg",
+			"/images/sana/mobile6.jpg",
+			"/images/sana/mobile7.jpg",
+			"/images/sana/mobile8.jpg",
 		],
 	},
 	// Banner模式特有配置
