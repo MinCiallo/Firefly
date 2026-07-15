@@ -14,6 +14,14 @@ export const galleryConfig: GalleryConfig = {
 		// tags: 相册标签，用于分类和过滤
 		// 每添加一个数组项就相当于添加了一个相册，记得在 public/gallery/ 目录下创建对应的子目录并放入图片
 		{
+			id: "sana",
+			name: "乾紗凪",
+			description: "ましろ色シンフォニー SANA EDITION",
+			location: "纯白交响曲",
+			date: "2026-07-15",
+			tags: ["纯白交响曲", "乾紗凪", "SANA"],
+		},
+		{
 			id: "firefly-2026",
 			name: "可爱流萤",
 			description: "飞萤之火自无梦的长夜亮起，绽放在终竟的明天。",
