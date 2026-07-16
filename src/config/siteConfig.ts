@@ -135,7 +135,7 @@ export const siteConfig: SiteConfig = {
 			// TMDB API Key
 			apiKey: "1784e3018453317c400e7b8540d88496",
 			// TMDB 列表 ID
-			listId: "",
+			listId: "8671310",
 		},
 	},
 
