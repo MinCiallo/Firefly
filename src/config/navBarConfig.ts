@@ -34,6 +34,9 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 	// 追番
 	links.push(LinkPreset.Anime);
 
+	// 动态
+	links.push(LinkPreset.Dynamic);
+
 	// 相册
 	links.push(LinkPreset.Gallery);
 

@@ -48,4 +48,9 @@ export const LinkPresets: { [key in LinkPreset]: NavBarLink } = {
 		url: "/anime/",
 		icon: "material-symbols:live-tv",
 	},
+	[LinkPreset.Dynamic]: {
+		name: i18n(I18nKey.dynamic),
+		url: "/dynamic/",
+		icon: "material-symbols:dynamic-feed",
+	},
 };

@@ -96,6 +96,7 @@ export type SiteConfig = {
 		bangumi: boolean;
 		gallery: boolean; // 相册页面开关
 		anime: boolean; // 追番页面开关（Bilibili + TMDB）
+		dynamic: boolean; // 动态页面开关
 	};
 
 	// 分类导航栏开关
@@ -189,6 +190,7 @@ export enum LinkPreset {
 	Bangumi = 6,
 	Gallery = 7,
 	Anime = 8,
+	Dynamic = 9,
 }
 
 export type NavBarLink = {
@@ -407,6 +409,13 @@ export type CoverImageConfig = {
 		fallback?: string; // API失败时的回退图片路径（相对于src目录或以/开头的public目录路径）
 		showLoading?: boolean; // 是否显示加载动画
 	};
+};
+
+export type DynamicConfig = {
+	title?: string;
+	description?: string;
+	showComment?: boolean;
+	itemsPerPage?: number;
 };
 
 // 组件配置类型定义
