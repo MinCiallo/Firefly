@@ -32,7 +32,7 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 	
 
 	// 追番
-	links.push(LinkPreset.Bangumi);
+	links.push(LinkPreset.Anime);
 
 	// 相册
 	links.push(LinkPreset.Gallery);
