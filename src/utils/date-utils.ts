@@ -114,8 +114,9 @@ export function formatTimezoneOffset(
 
 	if (!timezoneName || timezoneName === "GMT") return "UTC";
 
-	return timezoneName
-		.replace("GMT", "UTC")
-		.replace("+", "UTC+")
-		.replace("−", "UTC−");
+	const match = timezoneName.match(/GMT([+-]\d+)/);
+	if (match) {
+		return `UTC${match[1]}`;
+	}
+	return timezoneName.replace("GMT", "UTC");
 }

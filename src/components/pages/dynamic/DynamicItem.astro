@@ -7,7 +7,7 @@ import DynamicInlineComments from "@/components/pages/dynamic/DynamicInlineComme
 import { profileConfig, siteConfig } from "@/config";
 import I18nKey from "@/i18n/i18nKey";
 import { i18n } from "@/i18n/translation";
-import { formatDynamicDate, formatTimezoneOffset } from "@/utils/date-utils";
+import { formatTimezoneOffset } from "@/utils/date-utils";
 import { dynamicAnchor } from "@/utils/dynamic-utils";
 import { url } from "@/utils/url-utils";
 
@@ -26,11 +26,22 @@ const {
 } = Astro.props;
 const { Content } = await render(entry);
 const anchorId = dynamicAnchor(entry.id);
-const published = formatDynamicDate(entry.data.published);
-const timezone = formatTimezoneOffset(
-	siteConfig.timezone || "UTC",
-	entry.data.published,
-);
+const date = entry.data.published;
+const tz = siteConfig.timezone || "UTC";
+const dateStr = new Intl.DateTimeFormat("en-CA", {
+	timeZone: tz,
+	year: "numeric",
+	month: "2-digit",
+	day: "2-digit",
+}).format(date);
+const timeStr = new Intl.DateTimeFormat("en-CA", {
+	timeZone: "UTC",
+	hour: "2-digit",
+	minute: "2-digit",
+	second: "2-digit",
+	hourCycle: "h23",
+}).format(date);
+const published = `${dateStr} ${formatTimezoneOffset(tz, date)} ${timeStr}`;
 const permalink = detailUrl || `#${anchorId}`;
 const profileLabel = i18n(I18nKey.dynamicProfile).replace(
 	"{name}",
@@ -63,7 +74,7 @@ const profileLabel = i18n(I18nKey.dynamicProfile).replace(
 				<strong id={`${anchorId}-author`}>{profileConfig.name}</strong>
 				<a class="dynamic-time" href={permalink}>
 					<time datetime={entry.data.published.toISOString()}>
-						{published} {timezone}
+						{published}
 					</time>
 				</a>
 			</div>

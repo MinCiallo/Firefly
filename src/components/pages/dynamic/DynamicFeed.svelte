@@ -147,19 +147,20 @@ function createItem(entry: DynamicData) {
 	if (time) {
 		const date = new Date(entry.published);
 		time.dateTime = date.toISOString();
-		time.textContent = new Intl.DateTimeFormat(
-			document.documentElement.lang || undefined,
-			{
-				timeZone: timezone,
-				year: "numeric",
-				month: "2-digit",
-				day: "2-digit",
-				hour: "2-digit",
-				minute: "2-digit",
-				second: "2-digit",
-			},
-		).format(date);
-		time.textContent += ` ${formatTimezoneOffset(timezone, date)}`;
+		const dateStr = new Intl.DateTimeFormat("en-CA", {
+			timeZone: timezone,
+			year: "numeric",
+			month: "2-digit",
+			day: "2-digit",
+		}).format(date);
+		const timeStr = new Intl.DateTimeFormat("en-CA", {
+			timeZone: "UTC",
+			hour: "2-digit",
+			minute: "2-digit",
+			second: "2-digit",
+			hourCycle: "h23",
+		}).format(date);
+		time.textContent = `${dateStr} ${formatTimezoneOffset(timezone, date)} ${timeStr}`;
 	}
 
 	const content = root.querySelector<HTMLElement>("[data-dynamic-content]");
