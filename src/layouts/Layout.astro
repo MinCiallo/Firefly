@@ -81,6 +81,9 @@ let ogImageUrl: string | undefined;
 if (siteConfig.generateOgImages && postSlug) {
 	ogImageUrl = new URL(`/og/${postSlug}.png`, Astro.site).toString();
 }
+if (!ogImageUrl) {
+	ogImageUrl = new URL("/images/sana/sana3.jpg", Astro.site).toString();
+}
 
 const favicons: Favicon[] =
 	siteConfig.favicon.length > 0 ? siteConfig.favicon : defaultFavicons;
@@ -143,7 +146,7 @@ const siteLang = lang.replace("_", "-");
       property="og:description"
       content={description || siteConfig.description || pageTitle}
     />
-    {ogImageUrl && <meta property="og:image" content={ogImageUrl} />}
+    <meta property="og:image" content={ogImageUrl} />
     {
       setOGTypeArticle ? (
         <meta property="og:type" content="article" />
@@ -159,6 +162,7 @@ const siteLang = lang.replace("_", "-");
       name="twitter:description"
       content={description || siteConfig.description || pageTitle}
     />
+    <meta name="twitter:image" content={ogImageUrl} />
 
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
