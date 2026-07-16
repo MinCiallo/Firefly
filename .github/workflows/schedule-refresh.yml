@@ -1,0 +1,43 @@
+name: Scheduled Anime Refresh
+
+on:
+  schedule:
+    # 每天北京时间凌晨3点执行 (UTC+8 = 19:00 UTC)
+    - cron: "0 19 * * *"
+  workflow_dispatch:
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm build
+
+      - name: Update trigger timestamp
+        run: |
+          date > .trigger-refresh
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .trigger-refresh
+          git diff --staged --quiet || git commit -m "chore: daily anime data refresh"
+          git push
