@@ -31,6 +31,9 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 	// 我的及其子菜单
 	
 
+	// 追番
+	links.push(LinkPreset.Bangumi);
+
 	// 相册
 	links.push(LinkPreset.Gallery);
 
