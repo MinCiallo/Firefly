@@ -131,6 +131,12 @@ export const siteConfig: SiteConfig = {
 			// Bilibili 用户 UID
 			uid: "1434284905",
 		},
+		tmdb: {
+			// TMDB API Key
+			apiKey: "1784e3018453317c400e7b8540d88496",
+			// TMDB 列表 ID
+			listId: "",
+		},
 	},
 
 	// 页面开关配置 - 控制特定页面的访问权限，设为false会返回404
