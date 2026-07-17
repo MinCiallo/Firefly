@@ -82,7 +82,7 @@ if (siteConfig.generateOgImages && postSlug) {
 	ogImageUrl = new URL(`/og/${postSlug}.png`, Astro.site).toString();
 }
 if (!ogImageUrl) {
-	ogImageUrl = new URL("/images/sana/sana3.jpg", Astro.site).toString();
+	ogImageUrl = new URL("/images/og-default.jpg", Astro.site).toString();
 }
 
 const favicons: Favicon[] =
@@ -163,6 +163,11 @@ const siteLang = lang.replace("_", "-");
       content={description || siteConfig.description || pageTitle}
     />
     <meta name="twitter:image" content={ogImageUrl} />
+
+    <!-- QQ/微信 专用 meta 标签 -->
+    <meta itemprop="name" content={pageTitle} />
+    <meta itemprop="description" content={description || siteConfig.description || pageTitle} />
+    <meta itemprop="image" content={ogImageUrl} />
 
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
