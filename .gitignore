@@ -40,3 +40,6 @@ Firefly-docs/
 cache/
 package/
 .obsidian/
+
+# bangumi cached images (generated at build time)
+public/bangumi-images/

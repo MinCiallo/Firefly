@@ -11,6 +11,8 @@ import type {
 	UserSubjectCollectionResponse,
 } from "@/types/bangumi";
 import { formatDateI18nWithTime } from "@/utils/date-utils";
+import fs from "node:fs";
+import path from "node:path";
 
 //参考：霞葉 https://kasuha.com/posts/fuwari-enhance-ep2/
 
@@ -182,6 +184,70 @@ for (const [categoryKey, enabled] of Object.entries(bangumiConfig.categories)) {
 		}
 	}
 }
+
+// 缓存在 bgm.tv 图片到本地，解决国内访问慢的问题
+const cacheDir = "public/bangumi-images";
+if (!fs.existsSync(cacheDir)) {
+	fs.mkdirSync(cacheDir, { recursive: true });
+}
+
+// 收集所有需要缓存的图片（去重）
+const imageDownloads = new Map<string, number>(); // url -> subject_id
+for (const items of Object.values(bangumiData)) {
+	for (const item of items) {
+		const url = item.subject?.images?.medium;
+		if (url && !imageDownloads.has(url)) {
+			imageDownloads.set(url, item.subject.id);
+		}
+	}
+}
+
+console.log(`[Bangumi] 开始缓存 ${imageDownloads.size} 张图片到本地...`);
+let cachedCount = 0;
+let skippedCount = 0;
+
+await Promise.all(
+	Array.from(imageDownloads.entries()).map(async ([url, subjectId]) => {
+		const ext = url.split(".").pop()?.split("?")[0] || "jpg";
+		const localPath = path.join(cacheDir, `${subjectId}.${ext}`);
+		if (fs.existsSync(localPath)) {
+			skippedCount++;
+			return;
+		}
+		try {
+			const res = await fetch(url, {
+				headers: { "User-Agent": "YuuOuRou Blog" },
+			});
+			if (res.ok) {
+				const buffer = Buffer.from(await res.arrayBuffer());
+				fs.writeFileSync(localPath, buffer);
+				cachedCount++;
+			}
+		} catch {
+			// 下载失败则保持原URL
+		}
+	}),
+);
+
+// 替换数据中的图片URL为本地路径
+for (const items of Object.values(bangumiData)) {
+	for (const item of items) {
+		const url = item.subject?.images?.medium;
+		if (!url) continue;
+		const ext = url.split(".").pop()?.split("?")[0] || "jpg";
+		const localPath = `/bangumi-images/${item.subject.id}.${ext}`;
+		if (fs.existsSync(path.join("public", localPath))) {
+			item.subject.images.medium = localPath;
+			item.subject.images.small = localPath;
+			item.subject.images.large = localPath;
+			item.subject.images.common = localPath;
+		}
+	}
+}
+
+console.log(
+	`[Bangumi] 图片缓存完成: 新增 ${cachedCount}, 跳过 ${skippedCount}, 总计 ${imageDownloads.size}`,
+);
 
 // 根据 categoryOrder 配置对 tabs 进行排序
 const categoryOrder = siteConfig.bangumi?.categoryOrder || [];
