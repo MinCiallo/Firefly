@@ -235,12 +235,14 @@ for (const items of Object.values(bangumiData)) {
 		const url = item.subject?.images?.medium;
 		if (!url) continue;
 		const ext = url.split(".").pop()?.split("?")[0] || "jpg";
-		const localPath = `/bangumi-images/${item.subject.id}.${ext}`;
-		if (fs.existsSync(path.join("public", localPath))) {
-			item.subject.images.medium = localPath;
-			item.subject.images.small = localPath;
-			item.subject.images.large = localPath;
-			item.subject.images.common = localPath;
+		const fileName = `${item.subject.id}.${ext}`;
+		// 注意：path.join 中第二个参数不能以 / 开头，否则会被当作绝对路径
+		if (fs.existsSync(path.join(cacheDir, fileName))) {
+			const localUrl = `/bangumi-images/${fileName}`;
+			item.subject.images.medium = localUrl;
+			item.subject.images.small = localUrl;
+			item.subject.images.large = localUrl;
+			item.subject.images.common = localUrl;
 		}
 	}
 }
