@@ -74,14 +74,13 @@ const path = customPath || (id ? `/posts/${id}` : "");
   <!-- update date -->
   {
     !hideUpdateDate && updated && updated.getTime() !== published.getTime() && (
-      <div class="flex items-center">
-        <div class="meta-icon">
-          <Icon
-            name="material-symbols:edit-calendar-outline-rounded"
-            class="text-xl"
-          />
-        </div>
-        <span class="text-50 text-sm font-medium">
+      <div class="flex items-center gap-1.5 bg-(--primary)/10 text-(--primary) rounded-md px-2.5 py-1">
+        <Icon
+          name="material-symbols:edit-calendar-outline-rounded"
+          class="text-lg"
+        />
+        <span class="text-xs font-semibold">更新于</span>
+        <span class="text-sm font-bold">
           {formatDateToYYYYMMDD(updated)}
         </span>
       </div>
