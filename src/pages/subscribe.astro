@@ -70,6 +70,7 @@ const API_BASE = "https://api.minciallo.top";
             >
               订阅
             </button>
+            <div id="limit-hint" class="hidden mt-2 text-xs text-red-500 text-center"></div>
           </form>
         </div>
 
@@ -139,6 +140,65 @@ const API_BASE = "https://api.minciallo.top";
 
 <script>
   const API_BASE = "https://api.minciallo.top";
+  const STORAGE_KEY = "blog_sub_emails";
+  const MAX_EMAILS = 2;
+
+  // ========== localStorage 邮箱配额 ==========
+  function normalizeEmail(email) {
+    return email.trim().toLowerCase();
+  }
+
+  function getSubEmails() {
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    } catch {
+      return [];
+    }
+  }
+
+  function setSubEmails(emails) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(emails));
+  }
+
+  function addSubEmail(email) {
+    const emails = getSubEmails();
+    const normalized = normalizeEmail(email);
+    if (!emails.includes(normalized)) {
+      emails.push(normalized);
+      setSubEmails(emails);
+    }
+  }
+
+  function removeSubEmail(email) {
+    const normalized = normalizeEmail(email);
+    const emails = getSubEmails().filter((e) => e !== normalized);
+    setSubEmails(emails);
+  }
+
+  function isAtLimit() {
+    return getSubEmails().length >= MAX_EMAILS;
+  }
+
+  function updateLimitUI() {
+    const btn = document.getElementById("sub-btn");
+    const limitHint = document.getElementById("limit-hint");
+    const emails = getSubEmails();
+    if (emails.length >= MAX_EMAILS) {
+      btn.disabled = true;
+      btn.textContent = "已达上限";
+      if (limitHint) {
+        limitHint.classList.remove("hidden");
+        limitHint.textContent = `您已订阅 ${emails.length}/${MAX_EMAILS} 个邮箱，取消订阅后可添加新邮箱`;
+      }
+    } else {
+      btn.disabled = false;
+      btn.textContent = "订阅";
+      if (limitHint) {
+        limitHint.classList.add("hidden");
+        limitHint.textContent = "";
+      }
+    }
+  }
 
   // ========== Toast ==========
   function showToast(msg, type = "success") {
@@ -216,10 +276,20 @@ const API_BASE = "https://api.minciallo.top";
     e.preventDefault();
     const btn = document.getElementById("sub-btn");
     const name = document.getElementById("sub-name").value.trim();
-    const email = document.getElementById("sub-email").value.trim();
+    const email = normalizeEmail(document.getElementById("sub-email").value);
 
     if (!email || !email.includes("@")) {
       showToast("请输入有效的邮箱地址", "error");
+      return;
+    }
+
+    if (getSubEmails().includes(email)) {
+      showToast("该邮箱已订阅", "error");
+      return;
+    }
+
+    if (isAtLimit()) {
+      showToast(`最多只能订阅 ${MAX_EMAILS} 个邮箱`, "error");
       return;
     }
 
@@ -233,6 +303,8 @@ const API_BASE = "https://api.minciallo.top";
       });
       const data = await res.json();
       if (res.ok) {
+        addSubEmail(email);
+        updateLimitUI();
         showToast(data.message || "订阅成功");
         document.getElementById("sub-name").value = "";
         document.getElementById("sub-email").value = "";
@@ -251,7 +323,7 @@ const API_BASE = "https://api.minciallo.top";
   document.getElementById("unsubscribe-form")?.addEventListener("submit", async (e) => {
     e.preventDefault();
     const btn = document.getElementById("unsub-btn");
-    const email = document.getElementById("unsub-email").value.trim();
+    const email = normalizeEmail(document.getElementById("unsub-email").value);
 
     if (!email || !email.includes("@")) {
       showToast("请输入有效的邮箱地址", "error");
@@ -268,6 +340,8 @@ const API_BASE = "https://api.minciallo.top";
       });
       const data = await res.json();
       if (res.ok) {
+        removeSubEmail(email);
+        updateLimitUI();
         showToast(data.message || "已取消订阅");
         document.getElementById("unsub-email").value = "";
         loadSubscribers();
@@ -298,5 +372,6 @@ const API_BASE = "https://api.minciallo.top";
   });
 
   // ========== 初始化 ==========
+  updateLimitUI();
   loadSubscribers();
 </script>
