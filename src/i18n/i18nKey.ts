@@ -10,6 +10,7 @@ enum I18nKey {
 	searchContent = "searchContent",
 	searchViewMore = "searchViewMore",
 	other = "other",
+	subscribe = "subscribe",
 
 	tags = "tags",
 	categories = "categories",

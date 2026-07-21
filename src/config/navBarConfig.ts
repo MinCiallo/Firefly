@@ -40,12 +40,19 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 	// 相册
 	links.push(LinkPreset.Gallery);
 
-	// 关于及其子菜单
+	// 其他及其子菜单
 	links.push({
-		name: "关于",
+		name: "其他",
 		url: "/content/",
 		icon: "material-symbols:info",
 		children: [
+			// 订阅
+			{
+				name: "订阅",
+				url: "/subscribe/",
+				icon: "material-symbols:mail",
+			},
+
 			// 根据配置决定是否添加赞助，在siteConfig关闭pages.sponsor时导航栏不显示赞助
 			...(siteConfig.pages.sponsor ? [LinkPreset.Sponsor] : []),
 
