@@ -1,0 +1,294 @@
+---
+import MainGridLayout from "@/layouts/MainGridLayout.astro";
+
+const title = "订阅";
+const description = "订阅新文章通知，第一时间获取博客更新";
+const API_BASE = "http://122.51.64.8:4000";
+---
+
+<MainGridLayout title={title} description={description}>
+  <div class="flex w-full rounded-(--radius-large) overflow-hidden relative min-h-32">
+    <div class="card-base z-10 px-9 py-6 relative w-full">
+
+      <!-- 标题 -->
+      <div class="mb-6">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="h-8 w-8 rounded-lg bg-(--primary) flex items-center justify-center text-white dark:text-black/70">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+            </svg>
+          </div>
+          <div class="text-3xl font-bold text-neutral-900 dark:text-neutral-100">
+            {title}
+          </div>
+        </div>
+        <p class="text-base text-neutral-600 dark:text-neutral-400 leading-relaxed">
+          {description}
+        </p>
+      </div>
+
+      <!-- 订阅者数量 -->
+      <div id="subscriber-count" class="mb-6 text-lg font-medium text-(--primary)">
+        加载中...
+      </div>
+
+      <!-- 两栏布局 -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <!-- 订阅表单 -->
+        <div class="rounded-xl border border-(--line-divider) p-5">
+          <h3 class="text-lg font-bold text-neutral-900 dark:text-neutral-100 mb-4">
+            订阅新文章
+          </h3>
+          <form id="subscribe-form" class="flex flex-col gap-3">
+            <div>
+              <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
+                姓名
+              </label>
+              <input
+                id="sub-name"
+                type="text"
+                placeholder="你的昵称"
+                class="w-full px-3 py-2 rounded-lg border border-(--line-divider) bg-transparent text-sm outline-none focus:border-(--primary) transition"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
+                邮箱
+              </label>
+              <input
+                id="sub-email"
+                type="email"
+                placeholder="your@email.com"
+                class="w-full px-3 py-2 rounded-lg border border-(--line-divider) bg-transparent text-sm outline-none focus:border-(--primary) transition"
+                required
+              />
+            </div>
+            <button
+              id="sub-btn"
+              type="submit"
+              class="w-full py-2 rounded-lg bg-(--primary) text-white font-medium text-sm hover:opacity-85 transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+            >
+              订阅
+            </button>
+          </form>
+        </div>
+
+        <!-- 取消订阅表单 -->
+        <div class="rounded-xl border border-(--line-divider) p-5">
+          <h3 class="text-lg font-bold text-neutral-900 dark:text-neutral-100 mb-4">
+            取消订阅
+          </h3>
+          <form id="unsubscribe-form" class="flex flex-col gap-3">
+            <div>
+              <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
+                邮箱
+              </label>
+              <input
+                id="unsub-email"
+                type="email"
+                placeholder="your@email.com"
+                class="w-full px-3 py-2 rounded-lg border border-(--line-divider) bg-transparent text-sm outline-none focus:border-(--primary) transition"
+                required
+              />
+            </div>
+            <button
+              id="unsub-btn"
+              type="submit"
+              class="w-full py-2 rounded-lg border border-red-400 text-red-500 font-medium text-sm hover:bg-red-50 dark:hover:bg-red-900/20 transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+            >
+              取消订阅
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- 订阅者列表 -->
+      <div class="rounded-xl border border-(--line-divider) p-5">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-lg font-bold text-neutral-900 dark:text-neutral-100">
+            订阅者列表
+          </h3>
+          <div class="flex items-center gap-2">
+            <input
+              id="search-input"
+              type="text"
+              placeholder="搜索..."
+              class="px-3 py-1.5 rounded-lg border border-(--line-divider) bg-transparent text-sm outline-none focus:border-(--primary) transition w-40"
+            />
+            <button
+              id="check-btn"
+              class="px-3 py-1.5 rounded-lg border border-(--line-divider) text-sm text-neutral-600 dark:text-neutral-400 hover:bg-(--btn-regular-bg-hover) transition cursor-pointer"
+            >
+              手动检查
+            </button>
+          </div>
+        </div>
+        <div id="subscriber-list" class="text-sm text-neutral-500 dark:text-neutral-400">
+          加载中...
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Toast 容器 -->
+  <div id="toast" class="fixed top-4 right-4 z-50 hidden transition-all duration-300">
+    <div class="px-4 py-3 rounded-lg shadow-lg text-sm font-medium max-w-sm"></div>
+  </div>
+</MainGridLayout>
+
+<script>
+  const API_BASE = "http://122.51.64.8:4000";
+
+  // ========== Toast ==========
+  function showToast(msg, type = "success") {
+    const toast = document.getElementById("toast");
+    const inner = toast.querySelector("div");
+    inner.textContent = msg;
+    inner.className = "px-4 py-3 rounded-lg shadow-lg text-sm font-medium max-w-sm";
+    if (type === "success") {
+      inner.classList.add("bg-green-500", "text-white");
+    } else {
+      inner.classList.add("bg-red-500", "text-white");
+    }
+    toast.classList.remove("hidden");
+    toast.classList.add("animate-fade-in");
+    setTimeout(() => {
+      toast.classList.add("hidden");
+    }, 4000);
+  }
+
+  // ========== 加载订阅者列表 ==========
+  async function loadSubscribers() {
+    const list = document.getElementById("subscriber-list");
+    const count = document.getElementById("subscriber-count");
+    try {
+      const res = await fetch(`${API_BASE}/api/subscribers`);
+      const data = await res.json();
+      const subs = data.subscribers || [];
+      count.textContent = `已有 ${subs.length} 人订阅`;
+      if (subs.length === 0) {
+        list.innerHTML = '<span class="text-neutral-400">暂无订阅者</span>';
+        return;
+      }
+      list.innerHTML = subs
+        .map(
+          (s) => `
+        <div class="flex items-center justify-between py-2 border-b border-(--line-divider) last:border-0 subscriber-item">
+          <div class="flex items-center gap-3">
+            <div class="h-8 w-8 rounded-full bg-(--primary)/10 flex items-center justify-center text-(--primary) text-sm font-bold">
+              ${(s.name || "?")[0].toUpperCase()}
+            </div>
+            <div>
+              <div class="font-medium text-neutral-900 dark:text-neutral-100">${s.name || "匿名"}</div>
+              <div class="text-xs text-neutral-400">${s.email}</div>
+            </div>
+          </div>
+        </div>
+      `
+        )
+        .join("");
+    } catch (err) {
+      list.innerHTML = '<span class="text-red-400">加载失败，请检查后端服务</span>';
+      count.textContent = "";
+    }
+  }
+
+  // ========== 搜索过滤 ==========
+  document.getElementById("search-input")?.addEventListener("input", (e) => {
+    const keyword = e.target.value.toLowerCase();
+    document.querySelectorAll(".subscriber-item").forEach((item) => {
+      const text = item.textContent?.toLowerCase() || "";
+      item.style.display = text.includes(keyword) ? "" : "none";
+    });
+  });
+
+  // ========== 订阅 ==========
+  document.getElementById("subscribe-form")?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById("sub-btn");
+    const name = document.getElementById("sub-name").value.trim();
+    const email = document.getElementById("sub-email").value.trim();
+
+    if (!email || !email.includes("@")) {
+      showToast("请输入有效的邮箱地址", "error");
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = "提交中...";
+    try {
+      const res = await fetch(`${API_BASE}/api/subscribe`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: name || "匿名", email }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        showToast(data.message || "订阅成功");
+        document.getElementById("sub-name").value = "";
+        document.getElementById("sub-email").value = "";
+        loadSubscribers();
+      } else {
+        showToast(data.error || "订阅失败", "error");
+      }
+    } catch {
+      showToast("网络错误，请检查后端服务", "error");
+    }
+    btn.disabled = false;
+    btn.textContent = "订阅";
+  });
+
+  // ========== 取消订阅 ==========
+  document.getElementById("unsubscribe-form")?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById("unsub-btn");
+    const email = document.getElementById("unsub-email").value.trim();
+
+    if (!email || !email.includes("@")) {
+      showToast("请输入有效的邮箱地址", "error");
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = "提交中...";
+    try {
+      const res = await fetch(`${API_BASE}/api/unsubscribe`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        showToast(data.message || "已取消订阅");
+        document.getElementById("unsub-email").value = "";
+        loadSubscribers();
+      } else {
+        showToast(data.error || "取消失败", "error");
+      }
+    } catch {
+      showToast("网络错误，请检查后端服务", "error");
+    }
+    btn.disabled = false;
+    btn.textContent = "取消订阅";
+  });
+
+  // ========== 手动检查 ==========
+  document.getElementById("check-btn")?.addEventListener("click", async () => {
+    const btn = document.getElementById("check-btn");
+    btn.disabled = true;
+    btn.textContent = "检查中...";
+    try {
+      const res = await fetch(`${API_BASE}/api/check`, { method: "POST" });
+      const data = await res.json();
+      showToast(data.message || "检查完成");
+    } catch {
+      showToast("网络错误", "error");
+    }
+    btn.disabled = false;
+    btn.textContent = "手动检查";
+  });
+
+  // ========== 初始化 ==========
+  loadSubscribers();
+</script>
