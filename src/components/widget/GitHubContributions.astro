@@ -1,0 +1,115 @@
+---
+import WidgetLayout from "@/components/common/WidgetLayout.astro";
+
+interface Props {
+  class?: string;
+  style?: string;
+}
+
+const { class: className, style } = Astro.props;
+---
+
+<WidgetLayout name="GitHub 贡献" id="github-contrib" class={className} style={style}>
+  <div id="gh-content" class="flex flex-col gap-2">
+    <!-- 骨架屏 -->
+    <div id="gh-loading" class="flex gap-px overflow-hidden">
+      {Array.from({ length: 52 }).map(() => (
+        <div class="flex flex-col gap-px shrink-0">
+          {Array.from({ length: 7 }).map(() => (
+            <div class="w-[9px] h-[9px] rounded-sm bg-(--primary)/10 animate-pulse"></div>
+          ))}
+        </div>
+      ))}
+    </div>
+
+    <!-- 实际内容 -->
+    <div id="gh-loaded" class="hidden">
+      <div id="gh-grid" class="flex gap-px overflow-x-auto pb-1"></div>
+      <div id="gh-total" class="text-xs text-neutral-500 dark:text-neutral-400 mt-2 text-right"></div>
+    </div>
+
+    <!-- 失败 -->
+    <div id="gh-error" class="hidden text-xs text-neutral-400 text-center py-2">
+      无法获取贡献数据
+    </div>
+  </div>
+</WidgetLayout>
+
+<script is:inline>
+  const GH_API_URL = "https://api.minciallo.top";
+
+  const LEVEL_COLORS = {
+    light: ["#ebedf0", "#9be9a8", "#40c463", "#30a14e", "#216e39"],
+    dark:  ["#161b22", "#0e4429", "#006d32", "#26a641", "#39d353"],
+  };
+
+  function getLevel(count) {
+    if (count === 0) return 0;
+    if (count <= 3) return 1;
+    if (count <= 6) return 2;
+    if (count <= 9) return 3;
+    return 4;
+  }
+
+  function isDarkMode() {
+    return document.documentElement.classList.contains("dark");
+  }
+
+  function renderHeatmap(weeks) {
+    const colors = isDarkMode() ? LEVEL_COLORS.dark : LEVEL_COLORS.light;
+    const recentWeeks = weeks.slice(-52);
+
+    let html = "";
+    for (const week of recentWeeks) {
+      html += '<div class="flex flex-col gap-px shrink-0">';
+      for (const day of week.contributionDays) {
+        const level = getLevel(day.contributionCount);
+        html += `<div class="w-[9px] h-[9px] rounded-sm" style="background-color:${colors[level]}" title="${day.date}: ${day.contributionCount} contributions"></div>`;
+      }
+      html += "</div>";
+    }
+    return html;
+  }
+
+  async function loadGitHub() {
+    const loading = document.getElementById("gh-loading");
+    const loaded = document.getElementById("gh-loaded");
+    const error = document.getElementById("gh-error");
+    const grid = document.getElementById("gh-grid");
+    const total = document.getElementById("gh-total");
+    if (!loading || !loaded || !error || !grid || !total) return;
+
+    try {
+      const res = await fetch(`${GH_API_URL}/api/github/contributions`);
+      const data = res.ok ? await res.json() : null;
+      const calendar = data?.data?.user?.contributionsCollection?.contributionCalendar;
+      const weeks = calendar?.weeks;
+      if (!weeks || !weeks.length) throw new Error("No data");
+
+      loading.classList.add("hidden");
+      loaded.classList.remove("hidden");
+
+      grid.innerHTML = renderHeatmap(weeks);
+
+      const totalContributions = weeks.reduce(
+        (sum, w) => sum + w.contributionDays.reduce((s, d) => s + d.contributionCount, 0),
+        0
+      );
+      total.textContent = `过去一年共 ${totalContributions} 次贡献`;
+    } catch (err) {
+      loading.classList.add("hidden");
+      error.classList.remove("hidden");
+    }
+  }
+
+  window.__initGitHub = loadGitHub;
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", loadGitHub);
+  } else {
+    loadGitHub();
+  }
+  document.addEventListener("swup:contentReplaced", () => {
+    setTimeout(loadGitHub, 200);
+  });
+</script>
