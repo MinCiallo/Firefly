@@ -32,75 +32,44 @@ const API_BASE = "https://api.minciallo.top";
         加载中...
       </div>
 
-      <!-- 两栏布局 -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-        <!-- 订阅表单 -->
-        <div class="rounded-xl border border-(--line-divider) p-5">
-          <h3 class="text-lg font-bold text-neutral-900 dark:text-neutral-100 mb-4">
-            订阅新文章
-          </h3>
-          <form id="subscribe-form" class="flex flex-col gap-3">
-            <div>
-              <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
-                姓名
-              </label>
-              <input
-                id="sub-name"
-                type="text"
-                placeholder="你的昵称"
-                class="w-full px-3 py-2 rounded-lg border border-(--line-divider) bg-transparent text-sm text-neutral-900 dark:text-neutral-100 outline-none focus:border-(--primary) transition placeholder:text-neutral-400 dark:placeholder:text-neutral-400"
-              />
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
-                邮箱
-              </label>
-              <input
-                id="sub-email"
-                type="email"
-                placeholder="your@email.com"
-                class="w-full px-3 py-2 rounded-lg border border-(--line-divider) bg-transparent text-sm text-neutral-900 dark:text-neutral-100 outline-none focus:border-(--primary) transition placeholder:text-neutral-400 dark:placeholder:text-neutral-400"
-                required
-              />
-            </div>
-            <button
-              id="sub-btn"
-              type="submit"
-              class="w-full py-2 rounded-lg bg-(--primary) text-white font-medium text-sm hover:opacity-85 transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
-            >
-              订阅
-            </button>
-            <div id="limit-hint" class="hidden mt-2 text-xs text-red-500 text-center"></div>
-          </form>
-        </div>
-
-        <!-- 取消订阅表单 -->
-        <div class="rounded-xl border border-(--line-divider) p-5">
-          <h3 class="text-lg font-bold text-neutral-900 dark:text-neutral-100 mb-4">
-            取消订阅
-          </h3>
-          <form id="unsubscribe-form" class="flex flex-col gap-3">
-            <div>
-              <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
-                邮箱
-              </label>
-              <input
-                id="unsub-email"
-                type="email"
-                placeholder="your@email.com"
-                class="w-full px-3 py-2 rounded-lg border border-(--line-divider) bg-transparent text-sm text-neutral-900 dark:text-neutral-100 outline-none focus:border-(--primary) transition placeholder:text-neutral-400 dark:placeholder:text-neutral-400"
-                required
-              />
-            </div>
-            <button
-              id="unsub-btn"
-              type="submit"
-              class="w-full py-2 rounded-lg border border-red-400 text-red-500 font-medium text-sm hover:bg-red-50 dark:hover:bg-red-900/20 transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
-            >
-              取消订阅
-            </button>
-          </form>
-        </div>
+      <!-- 订阅表单 -->
+      <div class="rounded-xl border border-(--line-divider) p-5 mb-8">
+        <h3 class="text-lg font-bold text-neutral-900 dark:text-neutral-100 mb-4">
+          订阅新文章
+        </h3>
+        <form id="subscribe-form" class="flex flex-col gap-3">
+          <div>
+            <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
+              姓名
+            </label>
+            <input
+              id="sub-name"
+              type="text"
+              placeholder="你的昵称"
+              class="w-full px-3 py-2 rounded-lg border border-(--line-divider) bg-transparent text-sm text-neutral-900 dark:text-neutral-100 outline-none focus:border-(--primary) transition placeholder:text-neutral-400 dark:placeholder:text-neutral-400"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
+              邮箱
+            </label>
+            <input
+              id="sub-email"
+              type="email"
+              placeholder="your@email.com"
+              class="w-full px-3 py-2 rounded-lg border border-(--line-divider) bg-transparent text-sm text-neutral-900 dark:text-neutral-100 outline-none focus:border-(--primary) transition placeholder:text-neutral-400 dark:placeholder:text-neutral-400"
+              required
+            />
+          </div>
+          <button
+            id="sub-btn"
+            type="submit"
+            class="w-full py-2 rounded-lg bg-(--primary) text-white font-medium text-sm hover:opacity-85 transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+          >
+            订阅
+          </button>
+          <div id="limit-hint" class="hidden mt-2 text-xs text-red-500 text-center"></div>
+        </form>
       </div>
 
       <!-- 订阅者列表 -->
@@ -249,9 +218,16 @@ const API_BASE = "https://api.minciallo.top";
             </div>
             <div>
               <div class="font-medium text-neutral-900 dark:text-neutral-100">${s.name || "匿名"}</div>
-              <div class="text-xs text-neutral-400">${maskEmail(s.email)}</div>
+              <div class="text-xs text-neutral-400">${s.email}</div>
             </div>
           </div>
+          <button
+            class="unsub-item-btn px-2 py-1 rounded text-xs border border-red-300 text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition cursor-pointer"
+            data-id="${s.id}"
+            data-email="${s.email}"
+          >
+            取消
+          </button>
         </div>
       `
         )
@@ -319,31 +295,27 @@ const API_BASE = "https://api.minciallo.top";
     btn.textContent = "订阅";
   });
 
-  // ========== 取消订阅 ==========
-  document.getElementById("unsubscribe-form")?.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const btn = document.getElementById("unsub-btn");
-    const email = normalizeEmail(document.getElementById("unsub-email").value);
+  // ========== 取消订阅（列表内按钮） ==========
+  document.getElementById("subscriber-list")?.addEventListener("click", async (e) => {
+    const btn = e.target.closest(".unsub-item-btn");
+    if (!btn) return;
 
-    if (!email || !email.includes("@")) {
-      showToast("请输入有效的邮箱地址", "error");
-      return;
-    }
+    const id = btn.getAttribute("data-id");
+    const email = btn.getAttribute("data-email");
 
     btn.disabled = true;
-    btn.textContent = "提交中...";
+    btn.textContent = "...";
     try {
       const res = await fetch(`${API_BASE}/api/unsubscribe`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ id }),
       });
       const data = await res.json();
       if (res.ok) {
         removeSubEmail(email);
         updateLimitUI();
         showToast(data.message || "已取消订阅");
-        document.getElementById("unsub-email").value = "";
         loadSubscribers();
       } else {
         showToast(data.error || "取消失败", "error");
@@ -352,7 +324,7 @@ const API_BASE = "https://api.minciallo.top";
       showToast("网络错误，请检查后端服务", "error");
     }
     btn.disabled = false;
-    btn.textContent = "取消订阅";
+    btn.textContent = "取消";
   });
 
   // ========== 手动检查 ==========
