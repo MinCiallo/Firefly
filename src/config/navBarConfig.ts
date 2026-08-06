@@ -53,6 +53,13 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 				icon: "material-symbols:mail",
 			},
 
+			// 最近在听
+			{
+				name: "最近在听",
+				url: "/music/",
+				icon: "material-symbols:music-note",
+			},
+
 			// 根据配置决定是否添加赞助，在siteConfig关闭pages.sponsor时导航栏不显示赞助
 			...(siteConfig.pages.sponsor ? [LinkPreset.Sponsor] : []),
 
