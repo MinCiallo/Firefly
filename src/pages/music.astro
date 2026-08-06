@@ -1,0 +1,146 @@
+---
+import MainGridLayout from "@/layouts/MainGridLayout.astro";
+
+const title = "最近在听";
+const description = "最近在听的音乐记录";
+---
+
+<MainGridLayout title={title} description={description}>
+  <div class="flex w-full rounded-(--radius-large) overflow-hidden relative min-h-32">
+    <div class="card-base z-10 px-9 py-6 relative w-full">
+
+      <!-- 标题 -->
+      <div class="mb-6">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="h-8 w-8 rounded-lg bg-(--primary) flex items-center justify-center text-white dark:text-black/70">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"/>
+            </svg>
+          </div>
+          <div class="text-3xl font-bold text-neutral-900 dark:text-neutral-100">
+            {title}
+          </div>
+        </div>
+        <p class="text-base text-neutral-600 dark:text-neutral-400 leading-relaxed">
+          {description}
+        </p>
+        <p class="text-xs text-neutral-400 mt-1">
+          数据由 <a href="https://www.last.fm/" target="_blank" rel="noopener" class="text-(--primary) hover:underline">Last.fm</a> 同步自 Spotify，专辑图片由 iTunes 提供
+        </p>
+      </div>
+
+      <!-- 正在播放 -->
+      <div id="now-playing" class="hidden mb-6"></div>
+
+      <!-- 最近播放列表 -->
+      <div class="rounded-xl border border-(--line-divider) p-5">
+        <h3 class="text-lg font-bold text-neutral-900 dark:text-neutral-100 mb-4">最近播放</h3>
+        <div id="track-list" class="flex flex-col gap-1">
+          <div id="track-loading" class="text-sm text-neutral-400 py-8 text-center">加载中...</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</MainGridLayout>
+
+<script is:inline>
+  const LFM_API = "https://api.minciallo.top";
+
+  function timeAgo(uts) {
+    const diff = Math.floor((Date.now() / 1000) - uts);
+    if (diff < 60) return "刚刚";
+    if (diff < 3600) return Math.floor(diff / 60) + " 分钟前";
+    if (diff < 86400) return Math.floor(diff / 3600) + " 小时前";
+    if (diff < 2592000) return Math.floor(diff / 86400) + " 天前";
+    const d = new Date(uts * 1000);
+    return d.getMonth() + 1 + "/" + d.getDate();
+  }
+
+  function getImage(track) {
+    if (track?.albumArt) return track.albumArt;
+    const img = track?.image?.find(i => i.size === "extralarge") || track?.image?.find(i => i.size === "large");
+    return img?.["#text"] || "";
+  }
+
+  async function loadTracks() {
+    const nowPlaying = document.getElementById("now-playing");
+    const list = document.getElementById("track-list");
+    if (!list) return;
+
+    try {
+      const res = await fetch(`${LFM_API}/api/lastfm/recent`);
+      const data = res.ok ? await res.json() : null;
+      const tracks = data?.recenttracks?.track;
+      if (!tracks || !tracks.length) {
+        list.innerHTML = '<div class="text-sm text-neutral-400 py-8 text-center">暂无播放记录</div>';
+        return;
+      }
+
+      // 正在播放（无 date = 正在播放）
+      const np = !tracks[0].date ? tracks[0] : null;
+      const recent = np ? tracks.slice(1, 11) : tracks.slice(0, 10);
+
+      // 正在播放卡片
+      if (np) {
+        nowPlaying.classList.remove("hidden");
+        nowPlaying.innerHTML = `
+          <div class="rounded-xl border border-(--primary)/20 bg-(--primary)/3 p-5">
+            <div class="flex items-center gap-1.5 mb-3">
+              <span class="inline-block w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse"></span>
+              <span class="text-sm font-bold text-green-500">正在播放</span>
+            </div>
+            <div class="flex gap-4">
+              <img src="${getImage(np)}" alt="${np.name}"
+                   class="w-24 h-24 rounded-xl object-cover shadow-lg shrink-0"
+                   onerror="this.style.display='none'" />
+              <div class="flex flex-col justify-center min-w-0">
+                <a href="${np.url || '#'}" target="_blank" rel="noopener"
+                   class="text-xl font-bold text-neutral-900 dark:text-neutral-100 hover:text-(--primary) transition truncate">
+                  ${np.name || "未知歌曲"}
+                </a>
+                <div class="text-sm text-neutral-500 dark:text-neutral-400 mt-1">
+                  ${np.artist?.["#text"] || "未知艺术家"}
+                </div>
+                ${np.album?.["#text"] ? `<div class="text-xs text-neutral-400 mt-0.5">${np.album["#text"]}</div>` : ""}
+              </div>
+            </div>
+          </div>`;
+      }
+
+      // 最近播放列表
+      list.innerHTML = recent.map((t, i) => `
+        <a href="${t.url || '#'}" target="_blank" rel="noopener"
+           class="flex items-center gap-3 py-2.5 px-3 -mx-3 rounded-lg group hover:bg-(--primary)/5 transition border-b border-(--line-divider) last:border-0">
+          <span class="text-xs text-neutral-400 w-6 text-right shrink-0">${i + 1}</span>
+          <img src="${getImage(t)}" alt="${t.name}"
+               class="h-11 w-11 rounded-lg object-cover shrink-0"
+               onerror="this.style.display='none'" />
+          <div class="flex-1 min-w-0">
+            <div class="text-sm font-medium text-neutral-800 dark:text-neutral-200 truncate group-hover:text-(--primary) transition">
+              ${t.name || "未知歌曲"}
+            </div>
+            <div class="text-xs text-neutral-400 truncate">
+              ${t.artist?.["#text"] || ""}${t.album?.["#text"] ? " · " + t.album["#text"] : ""}
+            </div>
+          </div>
+          ${t.date ? `<span class="text-xs text-neutral-400 shrink-0">${timeAgo(t.date.uts)}</span>` : ""}
+        </a>
+      `).join("");
+
+    } catch (err) {
+      list.innerHTML = '<div class="text-sm text-red-400 py-8 text-center">加载失败，请检查后端服务</div>';
+    }
+  }
+
+  window.__initMusic = loadTracks;
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", loadTracks);
+  } else {
+    loadTracks();
+  }
+  document.addEventListener("swup:contentReplaced", () => {
+    setTimeout(loadTracks, 200);
+  });
+</script>
