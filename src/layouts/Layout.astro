@@ -1187,6 +1187,42 @@ function disableAnimation() {
     document.addEventListener("swup:enable", setup);
   }
 
+  // Swup 切页后，触发订阅/音乐页面的初始化
+  function registerSubscribeInit() {
+    window.swup.hooks.on("page:view", () => {
+      if (document.getElementById("subscribe-form") && typeof window.__initSubscribe === "function") {
+        window.__initSubscribe();
+      }
+      if (document.getElementById("now-playing") && typeof window.__initMusic === "function") {
+        window.__initMusic();
+      }
+    });
+  }
+  if (window?.swup?.hooks) {
+    registerSubscribeInit();
+  } else {
+    document.addEventListener("swup:enable", registerSubscribeInit);
+  }
+
+  // 兜底轮询：检测订阅/音乐列表是否卡在「加载中」，自动重试
+  let __subRetries = 0;
+  const __subPoll = setInterval(() => {
+    const subList = document.getElementById("subscriber-list");
+    const trackList = document.getElementById("track-list");
+    const target = subList || trackList;
+    if (!target) { __subRetries = 0; return; }
+    const text = target.textContent || "";
+    if (text.includes("加载中") || text.includes("加载失败")) {
+      if (__subRetries < 10) {
+        __subRetries++;
+        if (subList && typeof window.__initSubscribe === "function") window.__initSubscribe();
+        if (trackList && typeof window.__initMusic === "function") window.__initMusic();
+      }
+    } else {
+      __subRetries = 0;
+    }
+  }, 500);
+
   document.addEventListener("astro:page-load", scheduleContentOverflowEnhancements);
   document.addEventListener("password:decrypted", () => {
     setTimeout(scheduleContentOverflowEnhancements, 200);

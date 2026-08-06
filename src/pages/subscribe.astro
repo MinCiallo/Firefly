@@ -218,16 +218,9 @@ const API_BASE = "https://api.minciallo.top";
             </div>
             <div>
               <div class="font-medium text-neutral-900 dark:text-neutral-100">${s.name || "匿名"}</div>
-              <div class="text-xs text-neutral-400">${s.email}</div>
+              <div class="text-xs text-neutral-400">${maskEmail(s.email)}</div>
             </div>
           </div>
-          <button
-            class="unsub-item-btn px-2 py-1 rounded text-xs border border-red-300 text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition cursor-pointer"
-            data-id="${s.id}"
-            data-email="${s.email}"
-          >
-            取消
-          </button>
         </div>
       `
         )
@@ -295,37 +288,7 @@ const API_BASE = "https://api.minciallo.top";
     btn.textContent = "订阅";
   });
 
-  // ========== 取消订阅（列表内按钮） ==========
-  document.getElementById("subscriber-list")?.addEventListener("click", async (e) => {
-    const btn = e.target.closest(".unsub-item-btn");
-    if (!btn) return;
-
-    const id = btn.getAttribute("data-id");
-    const email = btn.getAttribute("data-email");
-
-    btn.disabled = true;
-    btn.textContent = "...";
-    try {
-      const res = await fetch(`${API_BASE}/api/unsubscribe`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id }),
-      });
-      const data = await res.json();
-      if (res.ok) {
-        removeSubEmail(email);
-        updateLimitUI();
-        showToast(data.message || "已取消订阅");
-        loadSubscribers();
-      } else {
-        showToast(data.error || "取消失败", "error");
-      }
-    } catch {
-      showToast("网络错误，请检查后端服务", "error");
-    }
-    btn.disabled = false;
-    btn.textContent = "取消";
-  });
+  
 
   // ========== 手动检查 ==========
   document.getElementById("check-btn")?.addEventListener("click", async () => {
@@ -344,6 +307,19 @@ const API_BASE = "https://api.minciallo.top";
   });
 
   // ========== 初始化 ==========
-  updateLimitUI();
-  loadSubscribers();
+  function initSubscribe() {
+    updateLimitUI();
+    loadSubscribers();
+  }
+
+  window.__initSubscribe = initSubscribe;
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initSubscribe);
+  } else {
+    initSubscribe();
+  }
+  document.addEventListener("swup:contentReplaced", () => {
+    setTimeout(initSubscribe, 200);
+  });
 </script>
