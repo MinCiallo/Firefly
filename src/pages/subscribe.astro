@@ -3,7 +3,6 @@ import MainGridLayout from "@/layouts/MainGridLayout.astro";
 
 const title = "订阅";
 const description = "订阅新文章通知，第一时间获取博客更新";
-const API_BASE = "https://api.minciallo.top";
 ---
 
 <MainGridLayout title={title} description={description}>
@@ -61,45 +60,12 @@ const API_BASE = "https://api.minciallo.top";
               required
             />
           </div>
-
-          <!-- 验证码区域（默认隐藏） -->
-          <div id="code-section" class="hidden flex flex-col gap-3">
-            <div>
-              <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
-                验证码
-              </label>
-              <div class="flex gap-2">
-                <input
-                  id="sub-code"
-                  type="text"
-                  placeholder="请输入邮箱收到的验证码"
-                  maxlength="6"
-                  class="flex-1 px-3 py-2 rounded-lg border border-(--line-divider) bg-transparent text-sm text-neutral-900 dark:text-neutral-100 outline-none focus:border-(--primary) transition placeholder:text-neutral-400 dark:placeholder:text-neutral-400"
-                />
-                <button
-                  id="resend-btn"
-                  type="button"
-                  class="px-3 py-2 rounded-lg border border-(--line-divider) text-sm text-neutral-600 dark:text-neutral-400 hover:bg-(--btn-regular-bg-hover) transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  重新发送
-                </button>
-              </div>
-            </div>
-            <button
-              id="verify-btn"
-              type="submit"
-              class="w-full py-2 rounded-lg bg-(--primary) text-white font-medium text-sm hover:opacity-85 transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
-            >
-              确认订阅
-            </button>
-          </div>
-
           <button
             id="sub-btn"
             type="submit"
             class="w-full py-2 rounded-lg bg-(--primary) text-white font-medium text-sm hover:opacity-85 transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
-            发送验证码
+            订阅
           </button>
         </form>
       </div>
@@ -140,7 +106,7 @@ const API_BASE = "https://api.minciallo.top";
 </MainGridLayout>
 
 <script>
-  const API_BASE = "https://api.minciallo.top";
+  const API_BASE = "http://122.51.64.8:4000";
 
   // ========== Toast ==========
   function showToast(msg, type = "success") {
@@ -157,27 +123,6 @@ const API_BASE = "https://api.minciallo.top";
     setTimeout(() => {
       toast.classList.add("hidden");
     }, 4000);
-  }
-
-  // ========== 倒计时 ==========
-  let countdownTimer = null;
-  function startResendCountdown(seconds = 60) {
-    const btn = document.getElementById("resend-btn");
-    btn.disabled = true;
-    let remaining = seconds;
-    const update = () => {
-      btn.textContent = `${remaining}秒后重发`;
-      remaining--;
-      if (remaining < 0) {
-        btn.disabled = false;
-        btn.textContent = "重新发送";
-        countdownTimer = null;
-      } else {
-        countdownTimer = setTimeout(update, 1000);
-      }
-    };
-    if (countdownTimer) clearTimeout(countdownTimer);
-    update();
   }
 
   // ========== 加载订阅者列表 ==========
@@ -216,7 +161,6 @@ const API_BASE = "https://api.minciallo.top";
           </div>
           <button
             class="unsub-item-btn px-2 py-1 rounded text-xs border border-red-300 text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition cursor-pointer"
-            data-id="${s.id}"
             data-email="${s.email}"
           >
             取消订阅
@@ -240,12 +184,47 @@ const API_BASE = "https://api.minciallo.top";
     });
   });
 
+  // ========== 订阅 ==========
+  document.getElementById("subscribe-form")?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById("sub-btn");
+    const name = document.getElementById("sub-name").value.trim();
+    const email = document.getElementById("sub-email").value.trim().toLowerCase();
+
+    if (!email || !email.includes("@")) {
+      showToast("请输入有效的邮箱地址", "error");
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = "提交中...";
+    try {
+      const res = await fetch(`${API_BASE}/api/subscribe`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: name || "匿名", email }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        showToast(data.message || "订阅成功");
+        document.getElementById("sub-name").value = "";
+        document.getElementById("sub-email").value = "";
+        loadSubscribers();
+      } else {
+        showToast(data.error || "订阅失败", "error");
+      }
+    } catch {
+      showToast("网络错误，请检查后端服务", "error");
+    }
+    btn.disabled = false;
+    btn.textContent = "订阅";
+  });
+
   // ========== 取消订阅 ==========
   document.getElementById("subscriber-list")?.addEventListener("click", async (e) => {
     const btn = e.target.closest(".unsub-item-btn");
     if (!btn) return;
 
-    const id = btn.getAttribute("data-id");
     const email = btn.getAttribute("data-email");
 
     if (!confirm(`确定要取消 ${maskEmail(email)} 的订阅吗？`)) return;
@@ -256,7 +235,7 @@ const API_BASE = "https://api.minciallo.top";
       const res = await fetch(`${API_BASE}/api/unsubscribe`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id }),
+        body: JSON.stringify({ email }),
       });
       const data = await res.json();
       if (res.ok) {
@@ -270,110 +249,6 @@ const API_BASE = "https://api.minciallo.top";
     }
     btn.disabled = false;
     btn.textContent = "取消订阅";
-  });
-
-  // ========== 发送验证码 ==========
-  document.getElementById("sub-btn")?.addEventListener("click", async (e) => {
-    e.preventDefault();
-    const btn = document.getElementById("sub-btn");
-    const name = document.getElementById("sub-name").value.trim();
-    const email = document.getElementById("sub-email").value.trim().toLowerCase();
-
-    if (!email || !email.includes("@")) {
-      showToast("请输入有效的邮箱地址", "error");
-      return;
-    }
-
-    btn.disabled = true;
-    btn.textContent = "发送中...";
-    try {
-      const res = await fetch(`${API_BASE}/api/subscribe/send-code`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: name || "匿名", email }),
-      });
-      const data = await res.json();
-      if (res.ok) {
-        showToast("验证码已发送到您的邮箱");
-        // 显示验证码区域
-        document.getElementById("code-section").classList.remove("hidden");
-        document.getElementById("sub-btn").classList.add("hidden");
-        document.getElementById("sub-code").focus();
-        startResendCountdown();
-      } else {
-        showToast(data.error || "发送失败", "error");
-      }
-    } catch {
-      showToast("网络错误，请检查后端服务", "error");
-    }
-    btn.disabled = false;
-    btn.textContent = "发送验证码";
-  });
-
-  // ========== 重新发送 ==========
-  document.getElementById("resend-btn")?.addEventListener("click", async () => {
-    const email = document.getElementById("sub-email").value.trim().toLowerCase();
-    const name = document.getElementById("sub-name").value.trim();
-    if (!email) return;
-    try {
-      const res = await fetch(`${API_BASE}/api/subscribe/send-code`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: name || "匿名", email }),
-      });
-      const data = await res.json();
-      if (res.ok) {
-        showToast("验证码已重新发送");
-        startResendCountdown();
-      } else {
-        showToast(data.error || "发送失败", "error");
-      }
-    } catch {
-      showToast("网络错误", "error");
-    }
-  });
-
-  // ========== 验证并确认订阅 ==========
-  document.getElementById("verify-btn")?.addEventListener("click", async (e) => {
-    e.preventDefault();
-    const btn = document.getElementById("verify-btn");
-    const email = document.getElementById("sub-email").value.trim().toLowerCase();
-    const code = document.getElementById("sub-code").value.trim();
-
-    if (!code) {
-      showToast("请输入验证码", "error");
-      return;
-    }
-
-    btn.disabled = true;
-    btn.textContent = "验证中...";
-    try {
-      const res = await fetch(`${API_BASE}/api/subscribe/verify`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, code }),
-      });
-      const data = await res.json();
-      if (res.ok) {
-        showToast(data.message || "订阅成功");
-        // 重置表单
-        document.getElementById("sub-name").value = "";
-        document.getElementById("sub-email").value = "";
-        document.getElementById("sub-code").value = "";
-        document.getElementById("code-section").classList.add("hidden");
-        document.getElementById("sub-btn").classList.remove("hidden");
-        if (countdownTimer) clearTimeout(countdownTimer);
-        document.getElementById("resend-btn").disabled = false;
-        document.getElementById("resend-btn").textContent = "重新发送";
-        loadSubscribers();
-      } else {
-        showToast(data.error || "验证失败", "error");
-      }
-    } catch {
-      showToast("网络错误，请检查后端服务", "error");
-    }
-    btn.disabled = false;
-    btn.textContent = "确认订阅";
   });
 
   // ========== 手动检查 ==========
