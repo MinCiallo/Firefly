@@ -428,7 +428,8 @@ export type WidgetComponentType =
 	| "advertisement"
 	| "stats"
 	| "calendar"
-	| "music";
+	| "music"
+	| "lastfm";
 
 export type WidgetComponentConfig = {
 	type: WidgetComponentType; // 组件类型

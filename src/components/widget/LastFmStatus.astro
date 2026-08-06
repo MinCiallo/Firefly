@@ -1,0 +1,101 @@
+---
+import WidgetLayout from "@/components/common/WidgetLayout.astro";
+
+interface Props {
+	class?: string;
+	style?: string;
+}
+const { class: className, style } = Astro.props;
+---
+
+<WidgetLayout name="最近在听" class={className} style={style}>
+  <div id="lastfm-widget" class="flex flex-col gap-2">
+    <div class="text-sm text-neutral-400 text-center py-4">加载中...</div>
+  </div>
+</WidgetLayout>
+
+<script>
+  const LFM_API = "https://api.minciallo.top";
+
+  function timeAgo(uts) {
+    const diff = Math.floor((Date.now() / 1000) - uts);
+    if (diff < 60) return "刚刚";
+    if (diff < 3600) return Math.floor(diff / 60) + " 分钟前";
+    if (diff < 86400) return Math.floor(diff / 3600) + " 小时前";
+    if (diff < 2592000) return Math.floor(diff / 86400) + " 天前";
+    const d = new Date(uts * 1000);
+    return d.getMonth() + 1 + "/" + d.getDate();
+  }
+
+  function getImage(track) {
+    if (track?.albumArt) return track.albumArt;
+    const img = track?.image?.find(i => i.size === "extralarge") || track?.image?.find(i => i.size === "large");
+    return img?.["#text"] || "";
+  }
+
+  async function loadLastFm() {
+    const container = document.getElementById("lastfm-widget");
+    if (!container) return;
+
+    try {
+      const res = await fetch(`${LFM_API}/api/lastfm/recent`);
+      const data = res.ok ? await res.json() : null;
+      const tracks = data?.recenttracks?.track;
+      if (!tracks || !tracks.length) {
+        container.innerHTML = '<div class="text-sm text-neutral-400 text-center py-2">暂无播放记录</div>';
+        return;
+      }
+
+      // 取最近 5 首（跳过正在播放的）
+      const np = !tracks[0].date ? tracks[0] : null;
+      const recent = np ? tracks.slice(1, 6) : tracks.slice(0, 5);
+
+      container.innerHTML = recent.map((t, i) => `
+        <a href="${t.url || '#'}" target="_blank" rel="noopener"
+           class="flex items-center gap-2.5 py-2 px-2 -mx-2 rounded-lg group hover:bg-(--primary)/5 transition">
+          <img src="${getImage(t)}" alt="${t.name}"
+               class="h-10 w-10 rounded-lg object-cover shrink-0 bg-neutral-100 dark:bg-neutral-800"
+               onerror="this.style.display='none'" />
+          <div class="flex-1 min-w-0">
+            <div class="text-sm font-medium text-neutral-800 dark:text-neutral-200 truncate group-hover:text-(--primary) transition">
+              ${t.name || "未知歌曲"}
+            </div>
+            <div class="text-xs text-neutral-400 truncate mt-0.5">
+              ${t.artist?.["#text"] || ""}
+            </div>
+          </div>
+          ${t.date ? `<span class="text-[11px] text-neutral-400 shrink-0 ml-1">${timeAgo(t.date.uts)}</span>` : ""}
+        </a>
+      `).join("");
+
+      // 查看全部链接
+      container.insertAdjacentHTML("beforeend", `
+        <a href="/music/" class="flex items-center justify-center gap-1 py-2 mt-1 rounded-lg text-xs text-neutral-400 hover:text-(--primary) transition border-t border-(--line-divider)">
+          查看全部
+          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+          </svg>
+        </a>
+      `);
+
+    } catch (err) {
+      container.innerHTML = '<div class="text-sm text-neutral-400 text-center py-2">加载失败</div>';
+    }
+  }
+
+  // 初始化
+  function initLastFm() {
+    loadLastFm();
+  }
+
+  window.__initLastFm = initLastFm;
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initLastFm);
+  } else {
+    initLastFm();
+  }
+  document.addEventListener("swup:contentReplaced", () => {
+    setTimeout(initLastFm, 200);
+  });
+</script>

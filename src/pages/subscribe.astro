@@ -7,101 +7,190 @@ const description = "订阅新文章通知，第一时间获取博客更新";
 
 <MainGridLayout title={title} description={description}>
   <div class="flex w-full rounded-(--radius-large) overflow-hidden relative min-h-32">
-    <div class="card-base z-10 px-9 py-6 relative w-full">
+    <div class="card-base z-10 px-5 sm:px-9 py-6 relative w-full">
 
       <!-- 标题 -->
       <div class="mb-6">
         <div class="flex items-center gap-3 mb-3">
-          <div class="h-8 w-8 rounded-lg bg-(--primary) flex items-center justify-center text-white dark:text-black/70">
+          <div class="h-9 w-9 rounded-xl bg-(--primary) flex items-center justify-center text-white dark:text-black/70 shadow-sm">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
             </svg>
           </div>
-          <div class="text-3xl font-bold text-neutral-900 dark:text-neutral-100">
+          <div class="text-2xl sm:text-3xl font-bold text-neutral-900 dark:text-neutral-100">
             {title}
           </div>
         </div>
-        <p class="text-base text-neutral-600 dark:text-neutral-400 leading-relaxed">
+        <p class="text-sm sm:text-base text-neutral-500 dark:text-neutral-400 leading-relaxed">
           {description}
         </p>
       </div>
 
       <!-- 订阅者数量 -->
-      <div id="subscriber-count" class="mb-6 text-lg font-medium text-(--primary)">
-        加载中...
+      <div id="subscriber-count" class="mb-8">
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-(--primary)/10 text-(--primary) text-sm font-medium">
+          <svg class="w-4 h-4 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+          </svg>
+          <span id="count-text">加载中...</span>
+        </div>
       </div>
 
       <!-- 订阅表单 -->
-      <div class="rounded-xl border border-(--line-divider) p-5 mb-8">
-        <h3 class="text-lg font-bold text-neutral-900 dark:text-neutral-100 mb-4">
-          订阅新文章
-        </h3>
-        <form id="subscribe-form" class="flex flex-col gap-3">
-          <div>
-            <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
-              姓名
-            </label>
-            <input
-              id="sub-name"
-              type="text"
-              placeholder="你的昵称"
-              class="w-full px-3 py-2 rounded-lg border border-(--line-divider) bg-transparent text-sm text-neutral-900 dark:text-neutral-100 outline-none focus:border-(--primary) transition placeholder:text-neutral-400 dark:placeholder:text-neutral-400"
-            />
+      <div class="rounded-xl border border-(--line-divider) p-5 sm:p-6 mb-6">
+        <div class="flex items-center gap-2 mb-5">
+          <h3 class="text-lg font-bold text-neutral-900 dark:text-neutral-100">订阅新文章</h3>
+          <!-- 步骤指示器 -->
+          <div id="step-indicator" class="flex items-center gap-1.5 ml-auto">
+            <span class="step-dot w-2 h-2 rounded-full bg-(--primary) transition-all duration-300"></span>
+            <span class="step-line w-6 h-0.5 rounded bg-neutral-200 dark:bg-neutral-700 transition-all duration-300"></span>
+            <span class="step-dot w-2 h-2 rounded-full bg-neutral-200 dark:bg-neutral-700 transition-all duration-300"></span>
           </div>
-          <div>
-            <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
-              邮箱
+        </div>
+        <form id="subscribe-form" class="flex flex-col gap-3.5">
+          <div class="flex flex-col sm:flex-row gap-3">
+            <div class="flex-1">
+              <label class="block text-xs font-medium text-neutral-500 dark:text-neutral-400 mb-1.5">
+                姓名 <span class="text-neutral-300 dark:text-neutral-600">(选填)</span>
+              </label>
+              <input
+                id="sub-name"
+                type="text"
+                placeholder="你的昵称"
+                class="w-full px-3.5 py-2.5 rounded-xl border border-(--line-divider) bg-(--btn-regular-bg) text-sm text-neutral-900 dark:text-neutral-100 outline-none focus:border-(--primary) focus:ring-2 focus:ring-(--primary)/20 transition-all placeholder:text-neutral-400 dark:placeholder:text-neutral-500"
+              />
+            </div>
+            <div class="flex-1">
+              <label class="block text-xs font-medium text-neutral-500 dark:text-neutral-400 mb-1.5">
+                邮箱 <span class="text-red-400">*</span>
+              </label>
+              <input
+                id="sub-email"
+                type="email"
+                placeholder="your@email.com"
+                required
+                class="w-full px-3.5 py-2.5 rounded-xl border border-(--line-divider) bg-(--btn-regular-bg) text-sm text-neutral-900 dark:text-neutral-100 outline-none focus:border-(--primary) focus:ring-2 focus:ring-(--primary)/20 transition-all placeholder:text-neutral-400 dark:placeholder:text-neutral-500"
+              />
+            </div>
+          </div>
+          <!-- 验证码区域（初始隐藏） -->
+          <div id="sub-code-area" class="hidden">
+            <label class="block text-xs font-medium text-neutral-500 dark:text-neutral-400 mb-1.5">
+              验证码 <span class="text-red-400">*</span>
             </label>
-            <input
-              id="sub-email"
-              type="email"
-              placeholder="your@email.com"
-              class="w-full px-3 py-2 rounded-lg border border-(--line-divider) bg-transparent text-sm text-neutral-900 dark:text-neutral-100 outline-none focus:border-(--primary) transition placeholder:text-neutral-400 dark:placeholder:text-neutral-400"
-              required
-            />
+            <div class="flex gap-2">
+              <input
+                id="sub-code"
+                type="text"
+                inputmode="numeric"
+                placeholder="输入6位验证码"
+                maxlength="6"
+                class="flex-1 px-3.5 py-2.5 rounded-xl border border-(--line-divider) bg-(--btn-regular-bg) text-sm text-neutral-900 dark:text-neutral-100 outline-none focus:border-(--primary) focus:ring-2 focus:ring-(--primary)/20 transition-all placeholder:text-neutral-400 dark:placeholder:text-neutral-500 tracking-widest text-center text-base sm:text-lg font-mono"
+              />
+              <button
+                id="sub-resend-btn"
+                type="button"
+                class="px-4 py-2.5 rounded-xl border border-(--line-divider) text-sm text-neutral-500 dark:text-neutral-400 hover:border-(--primary) hover:text-(--primary) transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+              >
+                重新发送
+              </button>
+            </div>
+            <p class="text-xs text-neutral-400 mt-1.5" id="code-hint"></p>
           </div>
           <button
             id="sub-btn"
             type="submit"
-            class="w-full py-2 rounded-lg bg-(--primary) text-white font-medium text-sm hover:opacity-85 transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+            class="w-full py-2.5 rounded-xl bg-(--primary) text-white font-medium text-sm hover:opacity-85 active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 cursor-pointer"
           >
-            订阅
+            发送验证码
           </button>
         </form>
       </div>
 
       <!-- 订阅者列表 -->
-      <div class="rounded-xl border border-(--line-divider) p-5">
-        <div class="flex items-center justify-between mb-4">
-          <h3 class="text-lg font-bold text-neutral-900 dark:text-neutral-100">
-            订阅者列表
-          </h3>
-          <div class="flex items-center gap-2">
-            <input
-              id="search-input"
-              type="text"
-              placeholder="搜索..."
-              class="px-3 py-1.5 rounded-lg border border-(--line-divider) bg-transparent text-sm text-neutral-900 dark:text-neutral-100 outline-none focus:border-(--primary) transition w-40 placeholder:text-neutral-400 dark:placeholder:text-neutral-400"
-            />
+      <div class="rounded-xl border border-(--line-divider) p-4 sm:p-6">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+          <h3 class="text-lg font-bold text-neutral-900 dark:text-neutral-100">订阅者列表</h3>
+          <div class="flex items-center gap-2 w-full sm:w-auto">
+            <div class="relative flex-1 sm:flex-none">
+              <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+              </svg>
+              <input
+                id="search-input"
+                type="text"
+                placeholder="搜索..."
+                class="w-full sm:w-44 pl-9 pr-3 py-1.5 rounded-lg border border-(--line-divider) bg-transparent text-sm text-neutral-900 dark:text-neutral-100 outline-none focus:border-(--primary) transition placeholder:text-neutral-400 dark:placeholder:text-neutral-500"
+              />
+            </div>
             <button
               id="check-btn"
-              class="px-3 py-1.5 rounded-lg border border-(--line-divider) text-sm text-neutral-600 dark:text-neutral-400 hover:bg-(--btn-regular-bg-hover) transition cursor-pointer"
+              class="shrink-0 px-3 py-1.5 rounded-lg border border-(--line-divider) text-sm text-neutral-500 dark:text-neutral-400 hover:bg-(--btn-regular-bg-hover) transition cursor-pointer"
             >
               手动检查
             </button>
           </div>
         </div>
         <div id="subscriber-list" class="text-sm text-neutral-500 dark:text-neutral-400">
-          加载中...
+          <!-- 骨架屏 -->
+          <div class="space-y-3">
+            <div class="flex items-center gap-3 animate-pulse">
+              <div class="h-8 w-8 rounded-full bg-neutral-200 dark:bg-neutral-700"></div>
+              <div class="flex-1 space-y-1.5">
+                <div class="h-3 w-20 rounded bg-neutral-200 dark:bg-neutral-700"></div>
+                <div class="h-2.5 w-32 rounded bg-neutral-100 dark:bg-neutral-800"></div>
+              </div>
+            </div>
+            <div class="flex items-center gap-3 animate-pulse">
+              <div class="h-8 w-8 rounded-full bg-neutral-200 dark:bg-neutral-700"></div>
+              <div class="flex-1 space-y-1.5">
+                <div class="h-3 w-16 rounded bg-neutral-200 dark:bg-neutral-700"></div>
+                <div class="h-2.5 w-28 rounded bg-neutral-100 dark:bg-neutral-800"></div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
     </div>
   </div>
 
+  <!-- 取消订阅验证码弹窗 -->
+  <div id="unsub-modal" class="fixed inset-0 z-50 hidden items-end sm:items-center justify-center">
+    <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" id="unsub-modal-bg"></div>
+    <div class="relative bg-white dark:bg-neutral-800 rounded-t-2xl sm:rounded-2xl shadow-2xl p-5 sm:p-6 mx-0 sm:mx-4 w-full max-w-sm transform transition-all duration-200 translate-y-4 sm:translate-y-0 sm:scale-95" id="unsub-modal-content">
+      <!-- 移动端拖拽条 -->
+      <div class="sm:hidden w-10 h-1 rounded-full bg-neutral-300 dark:bg-neutral-600 mx-auto mb-4"></div>
+      <h3 class="text-lg font-bold text-neutral-900 dark:text-neutral-100 mb-2">确认取消订阅</h3>
+      <p class="text-sm text-neutral-500 dark:text-neutral-400 mb-4" id="unsub-modal-email"></p>
+      <div class="mb-4">
+        <label class="block text-xs font-medium text-neutral-500 dark:text-neutral-400 mb-1.5">验证码</label>
+        <input
+          id="unsub-code"
+          type="text"
+          inputmode="numeric"
+          placeholder="输入6位验证码"
+          maxlength="6"
+          class="w-full px-3.5 py-2.5 rounded-xl border border-(--line-divider) bg-(--btn-regular-bg) text-sm text-neutral-900 dark:text-neutral-100 outline-none focus:border-(--primary) focus:ring-2 focus:ring-(--primary)/20 transition-all placeholder:text-neutral-400 tracking-widest text-center text-base sm:text-lg font-mono"
+        />
+        <p id="unsub-modal-error" class="text-xs text-red-400 mt-1.5 hidden"></p>
+      </div>
+      <div class="flex gap-2">
+        <button
+          id="unsub-cancel-btn"
+          class="flex-1 py-2.5 rounded-xl border border-(--line-divider) text-sm font-medium text-neutral-600 dark:text-neutral-300 hover:bg-(--btn-regular-bg-hover) transition cursor-pointer"
+        >取消</button>
+        <button
+          id="unsub-confirm-btn"
+          class="flex-1 py-2.5 rounded-xl bg-red-500 text-white text-sm font-medium hover:bg-red-600 active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 cursor-pointer"
+        >确认取消</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast 容器 -->
-  <div id="toast" class="fixed top-4 right-4 z-50 hidden transition-all duration-300">
-    <div class="px-4 py-3 rounded-lg shadow-lg text-sm font-medium max-w-sm"></div>
+  <div id="toast" class="fixed top-4 left-4 right-4 sm:left-auto sm:right-4 z-[100] opacity-0 translate-y-2 sm:translate-y-0 sm:translate-x-4 transition-all duration-300 pointer-events-none">
+    <div class="px-4 py-3 rounded-xl shadow-lg text-sm font-medium sm:max-w-sm flex items-center gap-2"></div>
   </div>
 </MainGridLayout>
 
@@ -109,19 +198,25 @@ const description = "订阅新文章通知，第一时间获取博客更新";
   const API_BASE = "https://api.minciallo.top";
 
   // ========== Toast ==========
+  let toastTimer = null;
   function showToast(msg, type = "success") {
     const toast = document.getElementById("toast");
     const inner = toast.querySelector("div");
     inner.textContent = msg;
-    inner.className = "px-4 py-3 rounded-lg shadow-lg text-sm font-medium max-w-sm";
+    inner.className = "px-4 py-3 rounded-xl shadow-lg text-sm font-medium sm:max-w-sm flex items-center gap-2";
     if (type === "success") {
       inner.classList.add("bg-green-500", "text-white");
+      inner.innerHTML = `<svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg><span>${msg}</span>`;
     } else {
       inner.classList.add("bg-red-500", "text-white");
+      inner.innerHTML = `<svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg><span>${msg}</span>`;
     }
-    toast.classList.remove("hidden");
-    setTimeout(() => {
-      toast.classList.add("hidden");
+    toast.classList.remove("opacity-0", "translate-y-2", "sm:translate-y-0", "sm:translate-x-4", "pointer-events-none");
+    toast.classList.add("opacity-100", "!translate-y-0", "sm:!translate-x-0");
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => {
+      toast.classList.add("opacity-0", "translate-y-2", "sm:translate-y-0", "sm:translate-x-4", "pointer-events-none");
+      toast.classList.remove("opacity-100", "!translate-y-0", "sm:!translate-x-0");
     }, 4000);
   }
 
@@ -134,33 +229,59 @@ const description = "订阅新文章通知，第一时间获取博客更新";
     return local[0] + "***" + domain;
   }
 
+  // 生成头像渐变背景色
+  function avatarColor(name) {
+    const colors = [
+      "from-blue-400 to-cyan-400",
+      "from-purple-400 to-pink-400",
+      "from-emerald-400 to-teal-400",
+      "from-orange-400 to-amber-400",
+      "from-rose-400 to-red-400",
+      "from-indigo-400 to-violet-400",
+      "from-sky-400 to-blue-400",
+      "from-fuchsia-400 to-purple-400",
+    ];
+    let hash = 0;
+    for (let i = 0; i < name.length; i++) {
+      hash = name.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    return colors[Math.abs(hash) % colors.length];
+  }
+
   async function loadSubscribers() {
     const list = document.getElementById("subscriber-list");
-    const count = document.getElementById("subscriber-count");
+    const countText = document.getElementById("count-text");
     try {
       const res = await fetch(`${API_BASE}/api/subscribers`);
       const data = await res.json();
       const subs = data.subscribers || [];
-      count.textContent = `已有 ${subs.length} 人订阅`;
+      countText.textContent = `已有 ${subs.length} 人订阅`;
       if (subs.length === 0) {
-        list.innerHTML = '<span class="text-neutral-400">暂无订阅者</span>';
+        list.innerHTML = `
+          <div class="flex flex-col items-center justify-center py-8 text-neutral-400">
+            <svg class="w-12 h-12 mb-3 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+            </svg>
+            <span class="text-sm">还没有订阅者，来做第一个吧</span>
+          </div>`;
         return;
       }
       list.innerHTML = subs
         .map(
-          (s) => `
-        <div class="flex items-center justify-between py-2 border-b border-(--line-divider) last:border-0 subscriber-item">
+          (s, i) => `
+        <div class="flex items-center justify-between py-3 border-b border-(--line-divider) last:border-0 subscriber-item hover:bg-neutral-50 dark:hover:bg-neutral-800/50 -mx-2 px-2 rounded-lg transition-colors">
           <div class="flex items-center gap-3">
-            <div class="h-8 w-8 rounded-full bg-(--primary)/10 flex items-center justify-center text-(--primary) text-sm font-bold">
+            <div class="h-9 w-9 rounded-full bg-gradient-to-br ${avatarColor(s.name || s.email)} flex items-center justify-center text-white text-sm font-bold shadow-sm shrink-0">
               ${(s.name || "?")[0].toUpperCase()}
             </div>
-            <div>
-              <div class="font-medium text-neutral-900 dark:text-neutral-100">${s.name || "匿名"}</div>
-              <div class="text-xs text-neutral-400">${maskEmail(s.email)}</div>
+            <div class="min-w-0">
+              <div class="font-medium text-neutral-900 dark:text-neutral-100 truncate">${s.name || "匿名"}</div>
+              <div class="text-xs text-neutral-400 dark:text-neutral-500 truncate">${maskEmail(s.email)}</div>
             </div>
           </div>
           <button
-            class="unsub-item-btn px-2 py-1 rounded text-xs border border-red-300 text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition cursor-pointer"
+            class="unsub-item-btn shrink-0 px-2.5 py-1 rounded-lg text-xs border border-red-200 dark:border-red-800 text-red-400 dark:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 transition cursor-pointer ml-3"
+            data-id="${s.id}"
             data-email="${s.email}"
           >
             取消订阅
@@ -170,26 +291,50 @@ const description = "订阅新文章通知，第一时间获取博客更新";
         )
         .join("");
     } catch (err) {
-      list.innerHTML = '<span class="text-red-400">加载失败，请检查后端服务</span>';
-      count.textContent = "";
+      list.innerHTML = '<span class="text-red-400 text-sm">加载失败，请检查后端服务</span>';
+      countText.textContent = "加载失败";
     }
   }
 
   // ========== 搜索过滤 ==========
   document.getElementById("search-input")?.addEventListener("input", (e) => {
     const keyword = e.target.value.toLowerCase();
+    let hasVisible = false;
     document.querySelectorAll(".subscriber-item").forEach((item) => {
       const text = item.textContent?.toLowerCase() || "";
-      item.style.display = text.includes(keyword) ? "" : "none";
+      const visible = text.includes(keyword);
+      item.style.display = visible ? "" : "none";
+      if (visible) hasVisible = true;
     });
+    // 无结果提示
+    let noResult = document.getElementById("no-search-result");
+    if (!hasVisible && keyword) {
+      if (!noResult) {
+        noResult = document.createElement("div");
+        noResult.id = "no-search-result";
+        noResult.className = "text-center py-6 text-sm text-neutral-400";
+        noResult.textContent = "没有找到匹配的订阅者";
+        document.getElementById("subscriber-list").appendChild(noResult);
+      }
+      noResult.style.display = "";
+    } else if (noResult) {
+      noResult.style.display = "none";
+    }
   });
 
-  // ========== 订阅 ==========
+  // ========== 订阅（两步验证） ==========
+  let subStep = 0;
+
   document.getElementById("subscribe-form")?.addEventListener("submit", async (e) => {
     e.preventDefault();
     const btn = document.getElementById("sub-btn");
     const name = document.getElementById("sub-name").value.trim();
     const email = document.getElementById("sub-email").value.trim().toLowerCase();
+    const codeArea = document.getElementById("sub-code-area");
+    const codeInput = document.getElementById("sub-code");
+    const code = codeInput.value.trim();
+    const stepDots = document.querySelectorAll(".step-dot");
+    const stepLine = document.querySelector(".step-line");
 
     if (!email || !email.includes("@")) {
       showToast("请输入有效的邮箱地址", "error");
@@ -197,58 +342,254 @@ const description = "订阅新文章通知，第一时间获取博客更新";
     }
 
     btn.disabled = true;
-    btn.textContent = "提交中...";
-    try {
-      const res = await fetch(`${API_BASE}/api/subscribe`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: name || "匿名", email }),
-      });
-      const data = await res.json();
-      if (res.ok) {
-        showToast(data.message || "订阅成功");
-        document.getElementById("sub-name").value = "";
-        document.getElementById("sub-email").value = "";
-        loadSubscribers();
-      } else {
-        showToast(data.error || "订阅失败", "error");
+
+    if (subStep === 0) {
+      // Step 1: 发送验证码
+      btn.textContent = "发送中...";
+      try {
+        const res = await fetch(`${API_BASE}/api/send-code`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email }),
+        });
+        const data = await res.json();
+        if (res.ok) {
+          showToast(data.message || "验证码已发送，请查收邮箱");
+          subStep = 1;
+          codeArea.classList.remove("hidden");
+          requestAnimationFrame(() => {
+            codeArea.style.opacity = "1";
+            codeArea.style.transform = "translateY(0)";
+          });
+          btn.textContent = "确认订阅";
+          document.getElementById("sub-email").readOnly = true;
+          // 更新步骤指示器
+          stepDots[1].classList.remove("bg-neutral-200", "dark:bg-neutral-700");
+          stepDots[1].classList.add("bg-(--primary)");
+          stepLine.classList.remove("bg-neutral-200", "dark:bg-neutral-700");
+          stepLine.classList.add("bg-(--primary)");
+          // 聚焦验证码输入框
+          setTimeout(() => codeInput.focus(), 100);
+          // 提示
+          document.getElementById("code-hint").textContent = "验证码已发送至 " + maskEmail(email);
+        } else {
+          showToast(data.error || "发送失败", "error");
+        }
+      } catch {
+        showToast("网络错误，请检查后端服务", "error");
       }
-    } catch {
-      showToast("网络错误，请检查后端服务", "error");
+    } else {
+      // Step 2: 验证验证码并完成订阅
+      if (!code || code.length < 4) {
+        showToast("请输入验证码", "error");
+        codeInput.focus();
+        btn.disabled = false;
+        return;
+      }
+      btn.textContent = "验证中...";
+      try {
+        const res = await fetch(`${API_BASE}/api/subscribe`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name: name || "匿名", email, code }),
+        });
+        const data = await res.json();
+        if (res.ok) {
+          showToast(data.message || "订阅成功！");
+          resetSubscribeForm();
+          loadSubscribers();
+        } else {
+          showToast(data.error || "订阅失败", "error");
+          if (data.error?.includes("验证码")) {
+            codeInput.focus();
+          }
+        }
+      } catch {
+        showToast("网络错误，请检查后端服务", "error");
+      }
     }
     btn.disabled = false;
-    btn.textContent = "订阅";
+    if (subStep === 0) btn.textContent = "发送验证码";
   });
 
-  // ========== 取消订阅 ==========
-  document.getElementById("subscriber-list")?.addEventListener("click", async (e) => {
-    const btn = e.target.closest(".unsub-item-btn");
-    if (!btn) return;
+  function resetSubscribeForm() {
+    subStep = 0;
+    const codeArea = document.getElementById("sub-code-area");
+    codeArea.classList.add("hidden");
+    codeArea.style.opacity = "0";
+    codeArea.style.transform = "translateY(-8px)";
+    document.getElementById("sub-name").value = "";
+    document.getElementById("sub-email").value = "";
+    document.getElementById("sub-email").readOnly = false;
+    document.getElementById("sub-code").value = "";
+    document.getElementById("code-hint").textContent = "";
+    document.getElementById("sub-btn").textContent = "发送验证码";
+    // 重置步骤指示器
+    const stepDots = document.querySelectorAll(".step-dot");
+    const stepLine = document.querySelector(".step-line");
+    stepDots[1].classList.remove("bg-(--primary)");
+    stepDots[1].classList.add("bg-neutral-200", "dark:bg-neutral-700");
+    stepLine.classList.remove("bg-(--primary)");
+    stepLine.classList.add("bg-neutral-200", "dark:bg-neutral-700");
+  }
 
-    const email = btn.getAttribute("data-email");
-
-    if (!confirm(`确定要取消 ${maskEmail(email)} 的订阅吗？`)) return;
-
+  // 重新发送验证码
+  document.getElementById("sub-resend-btn")?.addEventListener("click", async () => {
+    const btn = document.getElementById("sub-resend-btn");
+    const email = document.getElementById("sub-email").value.trim().toLowerCase();
     btn.disabled = true;
-    btn.textContent = "...";
+    btn.textContent = "发送中...";
     try {
-      const res = await fetch(`${API_BASE}/api/unsubscribe`, {
+      const res = await fetch(`${API_BASE}/api/send-code`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
       });
       const data = await res.json();
       if (res.ok) {
+        showToast("验证码已重新发送");
+        let cd = 60;
+        btn.textContent = `${cd}s`;
+        const timer = setInterval(() => {
+          cd--;
+          btn.textContent = `${cd}s`;
+          if (cd <= 0) {
+            clearInterval(timer);
+            btn.textContent = "重新发送";
+            btn.disabled = false;
+          }
+        }, 1000);
+        return;
+      } else {
+        showToast(data.error || "发送失败", "error");
+      }
+    } catch {
+      showToast("网络错误", "error");
+    }
+    btn.disabled = false;
+    btn.textContent = "重新发送";
+  });
+
+  // ========== 取消订阅（两步验证 + 自定义弹窗） ==========
+  const unsubModal = document.getElementById("unsub-modal");
+  const unsubModalBg = document.getElementById("unsub-modal-bg");
+  const unsubModalContent = document.getElementById("unsub-modal-content");
+  let unsubPendingId = null;
+  let unsubPendingBtn = null;
+
+  function showUnsubModal(email) {
+    document.getElementById("unsub-modal-email").textContent = `验证码已发送至 ${email}`;
+    document.getElementById("unsub-code").value = "";
+    document.getElementById("unsub-modal-error").classList.add("hidden");
+    unsubModal.classList.remove("hidden");
+    unsubModal.classList.add("flex");
+    requestAnimationFrame(() => {
+      unsubModalContent.classList.remove("translate-y-4", "sm:scale-95");
+      unsubModalContent.classList.add("!translate-y-0", "sm:!scale-100");
+    });
+    setTimeout(() => document.getElementById("unsub-code").focus(), 200);
+  }
+
+  function hideUnsubModal() {
+    unsubModalContent.classList.add("translate-y-4", "sm:scale-95");
+    unsubModalContent.classList.remove("!translate-y-0", "sm:!scale-100");
+    setTimeout(() => {
+      unsubModal.classList.add("hidden");
+      unsubModal.classList.remove("flex");
+    }, 200);
+    unsubPendingId = null;
+    if (unsubPendingBtn) {
+      unsubPendingBtn.disabled = false;
+      unsubPendingBtn.textContent = "取消订阅";
+      unsubPendingBtn = null;
+    }
+  }
+
+  unsubModalBg?.addEventListener("click", hideUnsubModal);
+  document.getElementById("unsub-cancel-btn")?.addEventListener("click", hideUnsubModal);
+
+  document.getElementById("unsub-confirm-btn")?.addEventListener("click", async () => {
+    const code = document.getElementById("unsub-code").value.trim();
+    const errorEl = document.getElementById("unsub-modal-error");
+    const btn = document.getElementById("unsub-confirm-btn");
+
+    if (!code || code.length < 4) {
+      errorEl.textContent = "请输入验证码";
+      errorEl.classList.remove("hidden");
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = "验证中...";
+    errorEl.classList.add("hidden");
+
+    try {
+      const res = await fetch(`${API_BASE}/api/unsubscribe/confirm`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: unsubPendingId, code }),
+      });
+      const data = await res.json();
+      if (res.ok) {
         showToast(data.message || "已取消订阅");
+        hideUnsubModal();
         loadSubscribers();
       } else {
-        showToast(data.error || "取消失败", "error");
+        errorEl.textContent = data.error || "验证失败";
+        errorEl.classList.remove("hidden");
+      }
+    } catch {
+      errorEl.textContent = "网络错误";
+      errorEl.classList.remove("hidden");
+    }
+    btn.disabled = false;
+    btn.textContent = "确认取消";
+  });
+
+  // 键盘事件：Enter 确认，Esc 取消
+  document.getElementById("unsub-code")?.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      document.getElementById("unsub-confirm-btn")?.click();
+    } else if (e.key === "Escape") {
+      hideUnsubModal();
+    }
+  });
+
+  document.getElementById("subscriber-list")?.addEventListener("click", async (e) => {
+    const btn = e.target.closest(".unsub-item-btn");
+    if (!btn) return;
+
+    const id = btn.getAttribute("data-id");
+    const email = btn.getAttribute("data-email");
+
+    if (!confirm(`确定要取消 ${maskEmail(email)} 的订阅吗？`)) return;
+
+    btn.disabled = true;
+    btn.textContent = "...";
+    unsubPendingBtn = btn;
+
+    try {
+      const res = await fetch(`${API_BASE}/api/unsubscribe/request`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        unsubPendingId = id;
+        showUnsubModal(maskEmail(email));
+      } else {
+        showToast(data.error || "请求失败", "error");
+        btn.disabled = false;
+        btn.textContent = "取消订阅";
+        unsubPendingBtn = null;
       }
     } catch {
       showToast("网络错误，请检查后端服务", "error");
+      btn.disabled = false;
+      btn.textContent = "取消订阅";
+      unsubPendingBtn = null;
     }
-    btn.disabled = false;
-    btn.textContent = "取消订阅";
   });
 
   // ========== 手动检查 ==========
@@ -283,3 +624,15 @@ const description = "订阅新文章通知，第一时间获取博客更新";
     setTimeout(initSubscribe, 200);
   });
 </script>
+
+<style>
+  #sub-code-area {
+    opacity: 0;
+    transform: translateY(-8px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+  #sub-code-area:not(.hidden) {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
