@@ -584,6 +584,64 @@ const siteLang = lang.replace("_", "-");
       document.addEventListener('DOMContentLoaded', replaceDe);
       document.addEventListener('astro:page-load', replaceDe);
     </script>
+
+    <script>
+      // 外部链接拦截：点击后跳转到 /leaving 中间页确认
+      const SITE_HOSTNAME = "www.minciallo.top";
+
+      // 白名单域名：这些域名的链接直接跳转，不经过中间页
+      const WHITELIST_DOMAINS = [
+        // "bilibili.com",
+        // "steampowered.com",
+      ];
+
+      function handleExternalLinks() {
+        document.querySelectorAll('a[href]').forEach((a) => {
+          const href = a.getAttribute('href');
+          if (!href) return;
+
+          // 跳过已处理的链接
+          if (a.hasAttribute('data-leaving-handled')) return;
+
+          try {
+            const url = new URL(href, window.location.origin);
+
+            // 跳过站内链接
+            if (url.hostname === SITE_HOSTNAME || url.hostname === window.location.hostname) return;
+
+            // 跳过白名单域名
+            if (WHITELIST_DOMAINS.some(d => url.hostname.endsWith(d))) return;
+
+            // 跳过特殊协议
+            if (url.protocol === 'javascript:' || url.protocol === 'mailto:' || url.protocol === 'tel:') return;
+
+            // 跳过明确标记不拦截的链接
+            if (a.hasAttribute('data-no-warn')) return;
+
+            // 跳过非 http/https 协议
+            if (url.protocol !== 'http:' && url.protocol !== 'https:') return;
+
+            // 标记已处理
+            a.setAttribute('data-leaving-handled', 'true');
+
+            a.addEventListener('click', (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              const encoded = encodeURIComponent(url.href);
+              window.open(`/leaving/?url=${encoded}`, '_blank');
+            });
+          } catch {
+            // 无效 URL，跳过
+          }
+        });
+      }
+
+      document.addEventListener('DOMContentLoaded', handleExternalLinks);
+      document.addEventListener('astro:page-load', handleExternalLinks);
+      document.addEventListener('swup:contentReplaced', () => {
+        setTimeout(handleExternalLinks, 200);
+      });
+    </script>
   </body>
 </html>
 

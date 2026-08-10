@@ -1,0 +1,116 @@
+---
+import MainGridLayout from "@/layouts/MainGridLayout.astro";
+
+const title = "提示";
+const description = "您即将访问外部网站";
+---
+
+<MainGridLayout title={title} description={description}>
+  <div class="flex w-full rounded-(--radius-large) overflow-hidden relative min-h-[50vh] sm:min-h-[40vh]">
+    <div class="card-base z-10 px-5 py-6 sm:px-8 sm:py-8 md:px-10 md:py-10 relative w-full flex flex-col items-center justify-center text-center">
+
+      <!-- 图标 -->
+      <div class="mb-3 sm:mb-5 flex justify-center">
+        <div class="h-12 w-12 sm:h-14 sm:w-14 md:h-16 md:w-16 rounded-full bg-yellow-100 dark:bg-yellow-900/30 flex items-center justify-center">
+          <svg class="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- 标题 -->
+      <h2 class="text-lg sm:text-xl md:text-2xl font-bold text-neutral-900 dark:text-neutral-100 mb-2 sm:mb-3">
+        您即将离开本站
+      </h2>
+
+      <!-- 提示文字 -->
+      <p class="text-xs sm:text-sm text-neutral-600 dark:text-neutral-400 mb-2 leading-relaxed max-w-md">
+        您即将访问外部网站，请注意您的账号和财产安全。
+      </p>
+
+      <!-- 目标网址 -->
+      <div id="target-url" class="inline-block mt-2 sm:mt-3 px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg bg-neutral-100 dark:bg-neutral-800 text-xs sm:text-sm text-neutral-500 dark:text-neutral-400 font-mono break-all max-w-full">
+        加载中...
+      </div>
+
+      <!-- 按钮 -->
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-2.5 sm:gap-3 mt-4 sm:mt-6 w-full max-w-xs sm:max-w-none">
+        <button id="confirm-btn" class="w-full sm:w-auto px-5 py-2 sm:px-6 sm:py-2.5 rounded-lg bg-(--primary) text-white font-medium text-sm hover:opacity-85 transition active:scale-[0.98] cursor-pointer">
+          继续访问
+        </button>
+        <button id="cancel-btn" class="w-full sm:w-auto px-5 py-2 sm:px-6 sm:py-2.5 rounded-lg border border-(--line-divider) text-neutral-600 dark:text-neutral-400 font-medium text-sm hover:bg-(--btn-regular-bg-hover) transition active:scale-[0.98] cursor-pointer">
+          取消
+        </button>
+      </div>
+
+    </div>
+  </div>
+</MainGridLayout>
+
+<style>
+  /* 横屏 + 高度不足时进一步压缩 */
+  @media (orientation: landscape) and (max-height: 500px) {
+    .card-base {
+      padding-top: 0.75rem !important;
+      padding-bottom: 0.75rem !important;
+    }
+    .card-base > div:first-child {
+      margin-bottom: 0.5rem !important;
+    }
+    .card-base h2 {
+      margin-bottom: 0.25rem !important;
+    }
+    .card-base p {
+      margin-bottom: 0.25rem !important;
+    }
+    #target-url {
+      margin-top: 0.5rem !important;
+    }
+    .card-base .flex {
+      margin-top: 0.5rem !important;
+    }
+  }
+</style>
+
+<script>
+  function initLeaving() {
+    const params = new URLSearchParams(window.location.search);
+    const url = params.get("url");
+    const targetEl = document.getElementById("target-url");
+
+    if (!url) {
+      targetEl.textContent = "未提供目标网址";
+      document.getElementById("confirm-btn").disabled = true;
+      return;
+    }
+
+    let targetUrl: string;
+    try {
+      targetUrl = decodeURIComponent(url);
+      new URL(targetUrl);
+    } catch {
+      targetUrl = url;
+    }
+
+    targetEl.textContent = targetUrl;
+
+    document.getElementById("confirm-btn")?.addEventListener("click", () => {
+      window.location.href = targetUrl;
+    });
+
+    document.getElementById("cancel-btn")?.addEventListener("click", () => {
+      window.close();
+    });
+  }
+
+  window.__initLeaving = initLeaving;
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initLeaving);
+  } else {
+    initLeaving();
+  }
+  document.addEventListener("swup:contentReplaced", () => {
+    setTimeout(initLeaving, 200);
+  });
+</script>
