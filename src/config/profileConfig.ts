@@ -12,7 +12,7 @@ export const profileConfig: ProfileConfig = {
 	name: "MinCiallo",
 
 	// 个人签名
-	bio: "是铭",
+	bio: "愿千年之恋，有朝一日能使万花绽放",
 
 	// 链接配置
 	// 已经预装的图标集：fa7-brands，fa7-regular，fa7-solid，material-symbols，simple-icons
