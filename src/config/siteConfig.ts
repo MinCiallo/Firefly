@@ -132,8 +132,8 @@ export const siteConfig: SiteConfig = {
 			uid: "1434284905",
 		},
 		tmdb: {
-			// TMDB API Key
-			apiKey: "1784e3018453317c400e7b8540d88496",
+			// TMDB API Key（通过环境变量注入，不硬编码）
+			apiKey: import.meta.env.TMDB_API_KEY || "",
 			// TMDB 列表 ID
 			listId: "8671310",
 		},
