@@ -6,16 +6,10 @@ if (!commentConfig?.giscus) {
 }
 
 const giscus = commentConfig.giscus;
-const lightTheme = "light";
-const darkTheme = "dark";
 ---
 
 <script is:inline type="module" src="https://esm.sh/giscus"></script>
 
-<!-- 
-  Giscus 官方Web Component用法，兼容Astro静态输出，无需import包，无需NPM依赖！
-  参考：https://giscus.app/ 详情配置说明
--->
 <giscus-widget
   id="comments"
   repo={giscus.repo}
@@ -27,37 +21,19 @@ const darkTheme = "dark";
   reactionsEnabled={giscus.reactionsEnabled}
   emitMetadata={giscus.emitMetadata}
   inputPosition={giscus.inputPosition}
-  theme={lightTheme}
+  theme="preferred_color_scheme"
   lang={giscus.lang}
   loading={giscus.loading}
 />
 
-<script is:inline define:vars={{ lightTheme, darkTheme }}>
-  function updateGiscusTheme() {
+<script is:inline>
+  const widget = document.querySelector('giscus-widget');
+  if (widget) {
     const isDark = document.documentElement.classList.contains('dark');
-    const theme = isDark ? darkTheme : lightTheme;
-    const widget = document.querySelector('giscus-widget');
-    if (widget) {
-      widget.setAttribute('theme', theme);
-    }
+    widget.setAttribute('theme', isDark ? 'dark_dimmed' : 'light');
+    new MutationObserver(() => {
+      const dark = document.documentElement.classList.contains('dark');
+      widget.setAttribute('theme', dark ? 'dark_dimmed' : 'light');
+    }).observe(document.documentElement, { attributes: true });
   }
-
-  // Initial update
-  updateGiscusTheme();
-
-  // Clean up previous observer if exists
-  if (window.giscusThemeObserver) {
-    window.giscusThemeObserver.disconnect();
-  }
-
-  // Create new observer
-  window.giscusThemeObserver = new MutationObserver((mutations) => {
-    mutations.forEach((mutation) => {
-      if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-        updateGiscusTheme();
-      }
-    });
-  });
-
-  window.giscusThemeObserver.observe(document.documentElement, { attributes: true });
 </script>
