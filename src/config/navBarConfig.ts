@@ -31,8 +31,8 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 	// 我的及其子菜单
 	
 
-	// 追番
-	links.push(LinkPreset.Anime);
+	// VNDB
+	...(siteConfig.pages.vndb ? [LinkPreset.Vndb] : []),
 
 	// 动态
 	links.push(LinkPreset.Dynamic);
@@ -66,8 +66,8 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 			// 番组计划
 			...(siteConfig.pages.bangumi ? [LinkPreset.Bangumi] : []),
 
-			// VNDB
-			...(siteConfig.pages.vndb ? [LinkPreset.Vndb] : []),
+			// 追番
+			...(siteConfig.pages.anime ? [LinkPreset.Anime] : []),
 
 			// 关于页面
 			LinkPreset.About,
