@@ -25,7 +25,6 @@ const buildTime = formatDateI18nWithTime(new Date());
 ////////////// VNDB 配置 ////////////////////////
 const vndbConfig = {
 	userId: siteConfig.vndb?.userId || "",
-	mode: (siteConfig.vndb?.mode || "static") as "static" | "dynamic",
 	downloadCovers: siteConfig.vndb?.downloadCovers ?? false,
 	apiUrl: siteConfig.vndb?.apiUrl || "https://api.vndb.org/kana",
 	vnBaseUrl: siteConfig.vndb?.vnBaseUrl || "https://vndb.org/",
@@ -37,17 +36,26 @@ const vndbConfig = {
 	},
 	blurNsfw: siteConfig.vndb?.blurNsfw ?? true,
 };
+
+const fetchConfig = {
+	userId: vndbConfig.userId,
+	apiUrl: vndbConfig.apiUrl,
+	apiToken: vndbConfig.apiToken,
+	vnBaseUrl: vndbConfig.vnBaseUrl,
+	pagination: vndbConfig.pagination,
+	blurNsfw: vndbConfig.blurNsfw,
+};
 //////////////////////////////////////////////////
 
-const isDynamic = vndbConfig.mode === "dynamic";
 const isUserIdConfigured =
 	vndbConfig.userId.trim() !== "" && vndbConfig.userId !== "you-user-id";
 
+// 构建时获取静态数据（用于首屏秒开）
 const vndbData: Record<string, VndbUlistEntry[]> = {};
 const tabs: VndbTab[] = [];
 let fetchFailed = false;
 
-if (!isDynamic && isUserIdConfigured) {
+if (isUserIdConfigured) {
 	const { limit, delay, maxTotal } = vndbConfig.pagination;
 	const allItems: VndbUlistEntry[] = [];
 	let page = 1;
@@ -97,6 +105,7 @@ if (!isDynamic && isUserIdConfigured) {
 }
 
 const activeTab = tabs[0]?.id || "all";
+const hasStaticData = tabs.length > 0;
 ---
 
 <MainGridLayout title={i18n(I18nKey.vndb)} description={i18n(I18nKey.vndbSubtitle)}>
@@ -115,77 +124,33 @@ const activeTab = tabs[0]?.id || "all";
           <p class="text-base text-neutral-600 dark:text-neutral-400 leading-relaxed">
             {i18n(I18nKey.vndbSubtitle)}
           </p>
-          {!isDynamic && (
-            <p class="text-xs text-neutral-500 dark:text-neutral-500 mt-2">
-              {i18n(I18nKey.vndbLastUpdated)} {buildTime}
-            </p>
-          )}
+          <p class="text-xs text-neutral-500 dark:text-neutral-500 mt-2">
+            {i18n(I18nKey.vndbLastUpdated)} {buildTime}
+          </p>
         </div>
 
-        {isDynamic ? (
-          <>
-            {!isUserIdConfigured ? (
-              <div class="text-center py-16">
-                <div class="inline-flex items-center justify-center w-16 h-16 bg-(--btn-regular-bg) rounded-full mb-6 border border-(--line-divider)">
-                  <Icon is:inline name="material-symbols:settings" class="text-[2rem] text-(--btn-content)" />
-                </div>
-                <h2 class="text-xl font-semibold text-black/80 dark:text-white/80 mb-3">
-                  {i18n(I18nKey.vndbNotConfigured)}
-                </h2>
-                <p class="text-black/60 dark:text-white/60 mb-4 max-w-md mx-auto">
-                  {i18n(I18nKey.vndbNotConfiguredDesc)}
-                </p>
-              </div>
-            ) : (
-              <VndbGrid
-                client:load
-                fetchConfig={{
-                  userId: vndbConfig.userId,
-                  apiUrl: vndbConfig.apiUrl,
-                  vnBaseUrl: vndbConfig.vnBaseUrl,
-                  pagination: vndbConfig.pagination,
-                  blurNsfw: vndbConfig.blurNsfw
-                }}
-              />
-            )}
-          </>
+        {!isUserIdConfigured ? (
+          <div class="text-center py-16">
+            <div class="inline-flex items-center justify-center w-16 h-16 bg-(--btn-regular-bg) rounded-full mb-6 border border-(--line-divider)">
+              <Icon is:inline name="material-symbols:settings" class="text-[2rem] text-(--btn-content)" />
+            </div>
+            <h2 class="text-xl font-semibold text-black/80 dark:text-white/80 mb-3">
+              {i18n(I18nKey.vndbNotConfigured)}
+            </h2>
+            <p class="text-black/60 dark:text-white/60 mb-4 max-w-md mx-auto">
+              {i18n(I18nKey.vndbNotConfiguredDesc)}
+            </p>
+          </div>
         ) : (
-          <>
-            {fetchFailed ? (
-              <div class="text-center py-16">
-                <div class="inline-flex items-center justify-center w-16 h-16 bg-(--btn-regular-bg) rounded-full mb-6 border border-(--line-divider)">
-                  <Icon is:inline name="material-symbols:error-outline" class="text-[2rem] text-red-500" />
-                </div>
-                <h2 class="text-xl font-semibold text-black/80 dark:text-white/80 mb-3">
-                  {i18n(I18nKey.vndbFetchError)}
-                </h2>
-                <p class="text-black/60 dark:text-white/60 mb-4 max-w-md mx-auto">
-                  {i18n(I18nKey.vndbFetchErrorDesc)}
-                </p>
-              </div>
-            ) : tabs.length > 0 ? (
-              <VndbGrid
-                client:load
-                tabs={tabs}
-                initialActiveTab={activeTab}
-                vndbData={vndbData}
-                vnBaseUrl={vndbConfig.vnBaseUrl}
-                blurNsfw={vndbConfig.blurNsfw}
-              />
-            ) : (
-              <div class="text-center py-16">
-                <div class="inline-flex items-center justify-center w-16 h-16 bg-(--btn-regular-bg) rounded-full mb-6 border border-(--line-divider)">
-                  <Icon is:inline name="material-symbols:settings" class="text-[2rem] text-(--btn-content)" />
-                </div>
-                <h2 class="text-xl font-semibold text-black/80 dark:text-white/80 mb-3">
-                  {isUserIdConfigured ? i18n(I18nKey.vndbEmpty) : i18n(I18nKey.vndbNotConfigured)}
-                </h2>
-                <p class="text-black/60 dark:text-white/60 mb-4 max-w-md mx-auto">
-                  {isUserIdConfigured ? i18n(I18nKey.vndbEmptyReason) : i18n(I18nKey.vndbNotConfiguredDesc)}
-                </p>
-              </div>
-            )}
-          </>
+          <VndbGrid
+            client:load
+            tabs={hasStaticData ? tabs : undefined}
+            initialActiveTab={activeTab}
+            vndbData={hasStaticData ? vndbData : undefined}
+            vnBaseUrl={vndbConfig.vnBaseUrl}
+            blurNsfw={vndbConfig.blurNsfw}
+            fetchConfig={fetchConfig}
+          />
         )}
       </div>
     </div>

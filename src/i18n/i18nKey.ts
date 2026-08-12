@@ -369,6 +369,7 @@ enum I18nKey {
 	vndbNotConfigured = "vndbNotConfigured",
 	vndbNotConfiguredDesc = "vndbNotConfiguredDesc",
 	vndbLastUpdated = "vndbLastUpdated",
+	vndbRefreshing = "vndbRefreshing",
 	vndbVotes = "vndbVotes",
 	vndbLengthVeryShort = "vndbLengthVeryShort",
 	vndbLengthShort = "vndbLengthShort",
