@@ -32,7 +32,9 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 	
 
 	// VNDB
-	...(siteConfig.pages.vndb ? [LinkPreset.Vndb] : []),
+	if (siteConfig.pages.vndb) {
+		links.push(LinkPreset.Vndb);
+	}
 
 	// 动态
 	links.push(LinkPreset.Dynamic);
