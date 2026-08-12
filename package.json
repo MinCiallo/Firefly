@@ -6,7 +6,6 @@
     "dev": "astro dev",
     "start": "astro dev",
     "check": "astro check",
-    "vndb:covers": "tsx scripts/generate-vndb-covers.ts",
     "build": "node scripts/generate-icons.js && astro build && pagefind --site dist",
     "preview": "astro preview",
     "astro": "astro",

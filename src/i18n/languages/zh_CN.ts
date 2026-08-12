@@ -377,7 +377,6 @@ export const zh_CN: Translation = {
 	[Key.vndbNotConfiguredDesc]:
 		"请在 src/config/siteConfig.ts 中配置你的 VNDB 用户ID",
 	[Key.vndbLastUpdated]: "数据更新于",
-	[Key.vndbRefreshing]: "正在检查最新数据...",
 	[Key.vndbVotes]: "票",
 	[Key.vndbLengthVeryShort]: "极短",
 	[Key.vndbLengthShort]: "短",

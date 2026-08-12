@@ -37,26 +37,26 @@ const {
 	blurNsfw,
 }: Props = $props();
 
-const hasStaticData = $derived(!!(staticTabs && staticTabs.length > 0));
+const isDynamic = $derived(!!fetchConfig);
 
 let activeTab = $state("");
-let loading = $state(false);
-let bgRefreshing = $state(false);
+let fetchLoading = $state(false);
 let error = $state(false);
 let errorTitle = $state("");
 let errorDesc = $state("");
 let dynamicTabs = $state<VndbTab[]>([]);
 let dynamicData = $state<Record<string, VndbUlistEntry[]>>({});
 
-// 优先使用后台刷新数据，否则用静态数据
-const tabs = $derived(dynamicTabs.length > 0 ? dynamicTabs : (staticTabs || []));
-const vndbData = $derived(
-	dynamicTabs.length > 0 ? dynamicData : (staticData || {})
-);
+const tabs = $derived(staticTabs || dynamicTabs);
+const vndbData = $derived(staticData || dynamicData);
 
 $effect(() => {
 	if (initialActiveTab) {
 		activeTab = initialActiveTab;
+	}
+	if (fetchConfig) {
+		fetchLoading = true;
+		error = false;
 	}
 });
 
@@ -89,79 +89,36 @@ async function loadDynamicData() {
 		}
 
 		if (allItems.length === 0) {
-			loading = false;
-			bgRefreshing = false;
+			fetchLoading = false;
 			error = true;
 			errorTitle = i18n(I18nKey.vndbNoData);
 			errorDesc = i18n(I18nKey.vndbNoDataDescription);
 			return;
 		}
 
-		// 和静态数据对比，有变化才更新
-		const staticIds = new Set((staticData?.all || []).map((item) => item.id));
-		const dynamicIds = new Set(allItems.map((item) => item.id));
-		const hasChanges = allItems.length !== (staticData?.all?.length || 0)
-			|| ![...staticIds].every((id) => dynamicIds.has(id));
-
-		if (hasChanges || !hasStaticData) {
-			// 保留静态数据中已有的本地封面 URL
-			const localCoverMap = new Map<string, string | null>();
-			for (const item of staticData?.all || []) {
-				const url = item.vn?.image?.url;
-				if (url && url.startsWith("/vndb-covers/")) {
-					localCoverMap.set(item.id, url);
-				}
-			}
-			for (const item of allItems) {
-				const localUrl = localCoverMap.get(item.id);
-				if (localUrl && item.vn?.image) {
-					item.vn.image.url = localUrl;
-				}
-			}
-
-			const newTabs = buildVndbTabs(allItems);
-			const newData: Record<string, VndbUlistEntry[]> = { all: allItems };
-			dynamicTabs = newTabs;
-			dynamicData = newData;
-			if (!hasStaticData) {
-				activeTab = newTabs[0]?.id || "all";
-			}
-		}
-
-		loading = false;
-		bgRefreshing = false;
+		const newTabs = buildVndbTabs(allItems);
+		const newData: Record<string, VndbUlistEntry[]> = { all: allItems };
+		dynamicTabs = newTabs;
+		dynamicData = newData;
+		activeTab = newTabs[0]?.id || "all";
+		fetchLoading = false;
 	} catch (e) {
-		console.error("[VNDB] 后台刷新失败:", e);
-		// 后台刷新失败不影响静态数据展示
-		bgRefreshing = false;
-		loading = false;
-		// 只有在完全没有静态数据时才显示错误
-		if (!hasStaticData) {
-			error = true;
-			errorTitle = i18n(I18nKey.vndbFetchError);
-			errorDesc = i18n(I18nKey.vndbFetchErrorDesc);
-		}
+		console.error("[VNDB] 获取数据失败:", e);
+		fetchLoading = false;
+		error = true;
+		errorTitle = i18n(I18nKey.vndbFetchError);
+		errorDesc = i18n(I18nKey.vndbFetchErrorDesc);
 	}
 }
 
 onMount(async () => {
-	if (hasStaticData) {
-		// 有静态数据：先渲染，后台静默刷新
-		if (fetchConfig) {
-			bgRefreshing = true;
-			await loadDynamicData();
-		}
-	} else if (fetchConfig) {
-		// 无静态数据：显示 loading，拉取数据
-		loading = true;
-		error = false;
+	if (isDynamic) {
 		await loadDynamicData();
 	}
 });
 </script>
 
-{#if loading && !hasStaticData}
-  <!-- 无静态数据时的骨架屏 -->
+{#if isDynamic && fetchLoading}
   <div class="border-b border-(--line-divider) mb-3">
     <div class="flex min-w-max space-x-8">
       {#each [1, 2, 3, 4] as _}
@@ -186,7 +143,7 @@ onMount(async () => {
     <div class="w-16 h-8 bg-(--btn-regular-bg) rounded animate-pulse"></div>
     <div class="w-11 h-11 bg-(--btn-regular-bg) rounded-lg animate-pulse"></div>
   </div>
-{:else if error && !hasStaticData}
+{:else if isDynamic && error}
   <div class="text-center py-16">
     <div class="inline-flex items-center justify-center w-16 h-16 bg-(--btn-regular-bg) rounded-full mb-6 border border-(--line-divider)">
       <span class="text-[2rem] text-red-500">&#9888;</span>
@@ -195,14 +152,6 @@ onMount(async () => {
     <p class="text-black/60 dark:text-white/60 mb-4 max-w-md mx-auto">{errorDesc}</p>
   </div>
 {:else if tabs.length > 0}
-  <!-- 后台刷新提示条 -->
-  {#if bgRefreshing}
-    <div class="mb-3 px-3 py-1.5 bg-(--btn-regular-bg) rounded-lg text-xs text-(--btn-content) flex items-center gap-2">
-      <span class="inline-block w-3 h-3 border-2 border-(--primary) border-t-transparent rounded-full animate-spin"></span>
-      {i18n(I18nKey.vndbRefreshing)}
-    </div>
-  {/if}
-
   <TabNav {tabs} {activeTab} onTabChange={handleTabChange} />
 
   {#each tabs as tab (tab.id)}
@@ -212,7 +161,7 @@ onMount(async () => {
       isActive={tab.id === activeTab}
       itemsPerPage={24}
       {vnBaseUrl}
-      blurNsfw={blurNsfw ?? fetchConfig?.blurNsfw ?? true}
+	  blurNsfw={blurNsfw ?? fetchConfig?.blurNsfw ?? true}
     />
   {/each}
 {/if}

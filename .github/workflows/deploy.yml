@@ -2,10 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [master]
-  schedule:
-    # 每天北京时间凌晨0点自动构建 (UTC+8 = 16:00 UTC)
-    - cron: "0 16 * * *"
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -31,9 +28,6 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install
-
-      - name: Generate VNDB covers
-        run: pnpm vndb:covers
 
       - name: Build
         run: pnpm build
