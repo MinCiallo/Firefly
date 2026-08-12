@@ -1,5 +1,1 @@
-blank_issues_enabled: false
-contact_links:
-  - name: 友链申请
-    url: https://github.com/MinCiallo/Firefly/issues/new?template=04-friend_link.yml
-    about: 申请与 MinCiallo 互加友链
+blank_issues_enabled: true
