@@ -53,4 +53,9 @@ export const LinkPresets: { [key in LinkPreset]: NavBarLink } = {
 		url: "/dynamic/",
 		icon: "material-symbols:dynamic-feed",
 	},
+	[LinkPreset.Vndb]: {
+		name: i18n(I18nKey.vndb),
+		url: "/vndb/",
+		icon: "material-symbols:movie",
+	},
 };

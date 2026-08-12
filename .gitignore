@@ -40,3 +40,6 @@ Firefly-docs/
 cache/
 package/
 .obsidian/
+
+# vndb covers
+public/vndb-covers/

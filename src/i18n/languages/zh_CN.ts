@@ -352,6 +352,38 @@ export const zh_CN: Translation = {
 	[Key.codeCollapsibleCollapsed]: "代码块已折叠",
 
 	// 相册页面
+	// VNDB
+	[Key.vndb]: "VNDB",
+	[Key.vndbSubtitle]: "我的 VNDB 视觉小说列表",
+	[Key.vndbFilterAll]: "全部",
+	[Key.vndbFilterVoted]: "已评分",
+	[Key.vndbFilterUnvoted]: "未评分",
+	[Key.vndbFilterNotes]: "有笔记",
+	[Key.vndbStatusWishlist]: "想玩",
+	[Key.vndbStatusPlaying]: "在玩",
+	[Key.vndbStatusFinished]: "已玩",
+	[Key.vndbStatusStalled]: "搁置",
+	[Key.vndbStatusDropped]: "抛弃",
+	[Key.vndbStatusUnknown]: "未知",
+	[Key.vndbNoData]: "暂无数据",
+	[Key.vndbNoDataDescription]: "该分类下还没有任何条目",
+	[Key.vndbEmpty]: "暂无数据",
+	[Key.vndbEmptyReason]:
+		"该账号在 VNDB 上还没有收藏条目，请先添加一些",
+	[Key.vndbFetchError]: "VNDB 数据拉取失败",
+	[Key.vndbFetchErrorDesc]:
+		"构建时从 VNDB API 获取数据失败，该页面内容暂不可用。",
+	[Key.vndbNotConfigured]: "未配置 VNDB 用户ID",
+	[Key.vndbNotConfiguredDesc]:
+		"请在 src/config/siteConfig.ts 中配置你的 VNDB 用户ID",
+	[Key.vndbLastUpdated]: "数据更新于",
+	[Key.vndbVotes]: "票",
+	[Key.vndbLengthVeryShort]: "极短",
+	[Key.vndbLengthShort]: "短",
+	[Key.vndbLengthMedium]: "中等",
+	[Key.vndbLengthLong]: "长",
+	[Key.vndbLengthVeryLong]: "极长",
+
 	[Key.gallery]: "相册",
 	[Key.galleryDescription]: "记录生活中的美好瞬间",
 	[Key.galleryPhotos]: "张照片",

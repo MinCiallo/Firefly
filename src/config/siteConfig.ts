@@ -139,6 +139,24 @@ export const siteConfig: SiteConfig = {
 		},
 	},
 
+	// VNDB配置
+	vndb: {
+		// VNDB 用户 ID，例如 "u2"
+		userId: "u357711",
+		// 数据模式：static=构建时获取，dynamic=客户端实时获取
+		mode: "static",
+		// 构建时下载并压缩封面到 public/vndb-covers，图片由本站服务器提供
+		downloadCovers: true,
+		// VNDB API 地址
+		apiUrl: "https://api.vndb.org/kana",
+		// 条目详情页地址，末尾需要带 /
+		vnBaseUrl: "https://vndb.org/",
+		// 私密列表访问令牌，仅 static 模式下使用
+		apiToken: "",
+		// 对 NSFW 的游戏封面模糊化
+		blurNsfw: true,
+	},
+
 	// 页面开关配置 - 控制特定页面的访问权限，设为false会返回404
 	// bangumi的数据为编译时获取的，所以不是实时数据，请配置bangumi.userId
 	pages: {
@@ -150,6 +168,8 @@ export const siteConfig: SiteConfig = {
 		guestbook: false,
 		// 番组计划页面开关，含追番、游戏、书籍和音乐，dev调试时只获取一页数据，build才会获取全部数据
 		bangumi: true,
+		// VNDB页面开关
+		vndb: true,
 		// 相册页面开关
 		gallery: true,
 		// 追番页面开关（Bilibili + TMDB），构建时获取数据

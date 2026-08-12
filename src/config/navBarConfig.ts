@@ -66,6 +66,9 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 			// 番组计划
 			...(siteConfig.pages.bangumi ? [LinkPreset.Bangumi] : []),
 
+			// VNDB
+			...(siteConfig.pages.vndb ? [LinkPreset.Vndb] : []),
+
 			// 关于页面
 			LinkPreset.About,
 		],
