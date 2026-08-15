@@ -214,11 +214,3 @@ body.wallpaper-transparent .custom-md {
   }
 }
 
-.audio-player {
-  @apply w-full my-4;
-
-  :root.dark & {
-    filter: invert(0.88) hue-rotate(180deg);
-  }
-}
-
