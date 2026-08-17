@@ -129,12 +129,12 @@ const postUrlPrefix = url("/posts/");
       const yearsSet = new Set();
       allPostsData.forEach(post => {
         const date = new Date(post.published);
-        const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+        const dateKey = `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, "0")}-${String(date.getUTCDate()).padStart(2, "0")}`;
         if (!postDateMap[dateKey]) {
           postDateMap[dateKey] = [];
         }
         postDateMap[dateKey].push({ id: post.id, title: post.title, published: post.published });
-        yearsSet.add(date.getFullYear());
+        yearsSet.add(date.getUTCFullYear());
       });
       
       availableYears = Array.from(yearsSet).sort((a, b) => b - a);
@@ -272,7 +272,7 @@ const postUrlPrefix = url("/posts/");
     // 获取当月所有文章
     const currentMonthPosts = allPostsData.filter(post => {
       const date = new Date(post.published);
-      return date.getFullYear() === currentYear && date.getMonth() === currentMonth;
+      return date.getUTCFullYear() === currentYear && date.getUTCMonth() === currentMonth;
     });
     
     // 显示当月文章列表
@@ -290,8 +290,8 @@ const postUrlPrefix = url("/posts/");
     const monthsWithPosts = new Set();
     allPostsData.forEach(post => {
         const date = new Date(post.published);
-        if (date.getFullYear() === displayYear) {
-            monthsWithPosts.add(date.getMonth());
+        if (date.getUTCFullYear() === displayYear) {
+            monthsWithPosts.add(date.getUTCMonth());
         }
     });
 
