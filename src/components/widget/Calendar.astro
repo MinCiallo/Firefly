@@ -139,12 +139,6 @@ const postUrlPrefix = url("/posts/");
       
       availableYears = Array.from(yearsSet).sort((a, b) => b - a);
       
-      // DEBUG: 打印 postDateMap 所有键和文章数量
-      console.log('[Calendar Debug] postDateMap keys:', Object.keys(postDateMap).sort());
-      console.log('[Calendar Debug] postDateMap details:', JSON.stringify(postDateMap, null, 2));
-      console.log('[Calendar Debug] allPostsData count:', allPostsData.length);
-      console.log('[Calendar Debug] first post raw published:', allPostsData[0]?.published, '→ date:', new Date(allPostsData[0]?.published));
-      
       renderCalendar();
     } catch (error) {
       console.error("Failed to fetch calendar data", error);
@@ -244,11 +238,6 @@ const postUrlPrefix = url("/posts/");
     }
     
     // 渲染日历格子
-    // DEBUG: 打印有文章的日期
-    const daysWithPosts = calendarDays.filter(d => d.hasPost);
-    console.log('[Calendar Debug] renderDayView - daysWithPosts:', daysWithPosts.map(d => d.dateKey));
-    console.log('[Calendar Debug] renderDayView - daysInMonth:', daysInMonth, 'firstDayOfMonth:', firstDayOfMonth);
-    
     calendarGrid.innerHTML = calendarDays.map(({day, hasPost, count, dateKey}) => {
       const isToday = day === currentDate && isCurrentMonth;
       const classes = [
@@ -285,11 +274,6 @@ const postUrlPrefix = url("/posts/");
       const date = new Date(post.published);
       return date.getFullYear() === currentYear && date.getMonth() === currentMonth;
     });
-    
-    // DEBUG: 打印当前视图信息
-    console.log('[Calendar Debug] renderDayView - currentYear:', currentYear, 'currentMonth:', currentMonth);
-    console.log('[Calendar Debug] renderDayView - currentMonthPosts count:', currentMonthPosts.length);
-    console.log('[Calendar Debug] renderDayView - currentMonthPosts:', currentMonthPosts.map(p => ({ id: p.id, published: p.published, date: new Date(p.published) })));
     
     // 显示当月文章列表
     showMonthlyPosts(currentMonthPosts);
