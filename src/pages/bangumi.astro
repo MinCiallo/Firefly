@@ -11,6 +11,7 @@ import type {
 	UserSubjectCollectionResponse,
 } from "@/types/bangumi";
 import { formatDateI18nWithTime } from "@/utils/date-utils";
+import { filterNsfw, isBangumiNsfw } from "@/utils/nsfw-utils";
 
 //参考：霞葉 https://kasuha.com/posts/fuwari-enhance-ep2/
 
@@ -39,6 +40,8 @@ const bangumiConfig = {
 		delay: 50, // 请求间隔毫秒数，避免频率限制
 		maxTotal: 1000, // 最大获取总数，防止无限循环（0=无限制）
 	},
+	// NSFW 处理："off" | "blur" | "hide"
+	nsfw: (siteConfig.bangumi?.nsfw ?? "blur") as "off" | "blur" | "hide",
 };
 //////////////////////////////////////////////////
 
@@ -165,11 +168,13 @@ for (const [categoryKey, enabled] of Object.entries(bangumiConfig.categories)) {
 				bangumiConfig.username!,
 				categoryInfo.subjectType,
 			);
-			bangumiData[categoryKey] = data;
+			// NSFW 拦截：hide 模式下过滤掉 NSFW 条目，保持标签页计数一致
+			const filteredData = filterNsfw(data, bangumiConfig.nsfw, isBangumiNsfw);
+			bangumiData[categoryKey] = filteredData;
 			tabs.push({
 				id: categoryKey,
 				name: categoryInfo.name,
-				count: data.length,
+				count: filteredData.length,
 			});
 		} catch (error) {
 			console.error(`[Bangumi] 获取 ${categoryInfo.name} 数据失败:`, error);
@@ -238,6 +243,7 @@ const activeTab = tabs[0]?.id || "anime";
             items={bangumiData[tab.id] || []}
             isActive={tab.id === activeTab}
             itemsPerPage={12}
+            nsfw={bangumiConfig.nsfw}
           />
           ))}
         </>

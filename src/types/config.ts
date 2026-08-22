@@ -6,6 +6,7 @@ import type {
 	WALLPAPER_NONE,
 	WALLPAPER_OVERLAY,
 } from "../constants/constants";
+import type { NsfwMode } from "./nsfw";
 
 export type SiteConfig = {
 	title: string;
@@ -51,6 +52,7 @@ export type SiteConfig = {
 	bangumi?: {
 		userId?: string; // Bangumi用户ID
 		categoryOrder?: ("anime" | "game" | "book" | "music" | "real")[]; // 条目类型排序顺序
+		nsfw?: NsfwMode; // NSFW 处理："off" 不过滤 | "blur" 仅模糊封面 | "hide" 隐藏条目
 	};
 	// 追番配置（Bilibili + TMDB）
 	anime?: {
@@ -71,7 +73,7 @@ export type SiteConfig = {
 		apiUrl?: string; // VNDB API 地址
 		vnBaseUrl?: string; // VNDB 条目详情页地址，末尾需要带 /
 		apiToken?: string; // 私密列表访问令牌，仅 static 模式下使用
-		blurNsfw?: boolean; // 对Nsfw的游戏封面模糊化，默认为true
+		nsfw?: NsfwMode; // NSFW 处理："off" 不过滤 | "blur" 仅模糊封面 | "hide" 隐藏条目
 	};
 
 	generateOgImages: boolean;

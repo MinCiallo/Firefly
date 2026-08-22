@@ -123,6 +123,8 @@ export const siteConfig: SiteConfig = {
 		// 可选值: "anime" | "book" | "music" | "game" | "real" (暂不支持"real"类型)
 		// 未列出的类型将按默认顺序排在后面
 		categoryOrder: ["game", "anime", "music", "book"],
+		// NSFW 处理："off" 不过滤 | "blur" 仅模糊封面 | "hide" 隐藏条目
+		nsfw: "blur",
 	},
 
 	// 追番配置（Bilibili + TMDB）
@@ -153,8 +155,8 @@ export const siteConfig: SiteConfig = {
 		vnBaseUrl: "https://vndb.org/",
 		// 私密列表访问令牌，仅 static 模式下使用
 		apiToken: "",
-		// 对 NSFW 的游戏封面模糊化
-		blurNsfw: true,
+		// NSFW 处理："off" 不过滤 | "blur" 仅模糊封面 | "hide" 隐藏条目
+		nsfw: "blur",
 	},
 
 	// 页面开关配置 - 控制特定页面的访问权限，设为false会返回404

@@ -2,7 +2,9 @@
 import { onMount } from "svelte";
 import I18nKey from "@/i18n/i18nKey";
 import { i18n } from "@/i18n/translation";
+import type { NsfwMode } from "@/types/nsfw";
 import type { VndbUlistEntry } from "@/types/vndb";
+import { isVndbNsfw } from "@/utils/nsfw-utils";
 import {
 	buildVndbTabs,
 	fetchVndbUlist,
@@ -17,14 +19,14 @@ interface Props {
 	initialActiveTab?: string;
 	vndbData?: Record<string, VndbUlistEntry[]>;
 	vnBaseUrl?: string;
-	blurNsfw?: boolean;
+	nsfw?: NsfwMode; // NSFW 处理："off" | "blur" | "hide"
 	fetchConfig?: {
 		userId: string;
 		apiUrl: string;
 		apiToken?: string;
 		vnBaseUrl: string;
 		pagination: { limit: number; delay: number; maxTotal: number };
-		blurNsfw: boolean;
+		nsfw?: NsfwMode;
 	};
 }
 
@@ -34,8 +36,10 @@ const {
 	vndbData: staticData,
 	vnBaseUrl,
 	fetchConfig,
-	blurNsfw,
+	nsfw,
 }: Props = $props();
+
+const nsfwMode = $derived(nsfw ?? fetchConfig?.nsfw ?? "off");
 
 const isDynamic = $derived(!!fetchConfig);
 
@@ -68,7 +72,7 @@ async function loadDynamicData() {
 	if (!fetchConfig) return;
 	const { userId, apiUrl, apiToken, pagination } = fetchConfig;
 	const { limit, delay, maxTotal } = pagination;
-	const allItems: VndbUlistEntry[] = [];
+	let allItems: VndbUlistEntry[] = [];
 	let page = 1;
 
 	try {
@@ -86,6 +90,11 @@ async function loadDynamicData() {
 			if (!data.more || batch.length === 0) break;
 			page += 1;
 			await new Promise((resolve) => setTimeout(resolve, delay));
+		}
+
+		// NSFW 拦截：hide 模式下过滤掉 NSFW 条目，保持标签页计数一致
+		if (nsfwMode === "hide") {
+			allItems = allItems.filter((item) => !isVndbNsfw(item));
 		}
 
 		if (allItems.length === 0) {
@@ -161,7 +170,7 @@ onMount(async () => {
       isActive={tab.id === activeTab}
       itemsPerPage={24}
       {vnBaseUrl}
-	  blurNsfw={blurNsfw ?? fetchConfig?.blurNsfw ?? true}
+	  nsfw={nsfwMode}
     />
   {/each}
 {/if}

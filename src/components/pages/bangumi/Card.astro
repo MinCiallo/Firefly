@@ -1,14 +1,20 @@
 ---
 import I18nKey from "@/i18n/i18nKey";
 import { i18n } from "@/i18n/translation";
+import type { NsfwMode } from "@/types/nsfw";
+import { isBangumiNsfw } from "@/utils/nsfw-utils";
 import type { UserSubjectCollection } from "@/types/bangumi";
 
 interface Props {
 	item: UserSubjectCollection;
 	loadImage?: boolean;
+	nsfw?: NsfwMode; // NSFW 处理："off" | "blur" | "hide"
 }
 
-const { item, loadImage = false } = Astro.props;
+const { item, loadImage = false, nsfw = "off" } = Astro.props;
+
+// blur 模式下命中 NSFW 的封面模糊显示
+const imageNsfw = nsfw === "blur" && isBangumiNsfw(item);
 
 const subject_base_url = "https://bgm.tv/subject/";
 
@@ -86,6 +92,7 @@ const hiddenCoverTagCount = Math.max(
         class="w-full h-full object-cover pointer-events-none transition-transform duration-500 group-hover:scale-105"
         loading="lazy"
         decoding="async"
+        style={imageNsfw ? "filter: blur(20px)" : undefined}
       />
     ) : (
       <div class="w-full h-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
