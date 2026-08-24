@@ -95,8 +95,9 @@ const managerConfigStr = JSON.stringify({
     }
 
     // ── Audio element (persistent, attached to body) ────────
+    // 注意：不能设置 crossOrigin='anonymous'，否则 audio 会以 CORS 模式加载音源，
+    // 而网易云等 CDN 不返回 Access-Control-Allow-Origin 头，导致播放失败(NotSupportedError)。
     var audio = document.createElement('audio');
-    audio.crossOrigin = 'anonymous';
     audio.style.display = 'none';
     document.body.appendChild(audio);
 
