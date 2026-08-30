@@ -23,12 +23,12 @@ export const sponsorConfig: SponsorConfig = {
 	// 赞助方式列表
 	methods: [
 		{
-			name: "微信",
-			icon: "fa7-brands:weixin",
+			name: "支付宝",
+			icon: "fa7-brands:alipay",
 			// 收款码图片路径（需要放在 public 目录下）
 			qrCode: "/assets/images/sponsor/alipay.png",
 			link: "",
-			description: "使用 微信 扫码赞助",
+			description: "使用 支付宝 扫码赞助",
 			enabled: true,
 		},
 		{
