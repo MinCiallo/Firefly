@@ -308,6 +308,11 @@ export const zh_TW: Translation = {
 	[Key.passwordHint]: "提示",
 	[Key.passwordPlaceholder]: "請輸入密碼",
 	[Key.passwordSubmit]: "解鎖",
-	[Key.passwordError]: "密碼錯誤，請重試。",
-	[Key.passwordProtectedRss]: "本文已加密保護，請訪問網站查看。",
+      [Key.passwordError]: "密碼錯誤，請重試。",
+      [Key.passwordProtectedRss]: "本文已加密保護，請訪問網站查看。",
+
+      // 沉浸閱讀
+      [Key.immersiveReading]: "沉浸閱讀",
+      [Key.enterImmersiveReading]: "進入沉浸閱讀",
+      [Key.exitImmersiveReading]: "退出沉浸閱讀",
 };

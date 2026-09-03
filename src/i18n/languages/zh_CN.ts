@@ -397,6 +397,11 @@ export const zh_CN: Translation = {
 	[Key.passwordHint]: "提示",
 	[Key.passwordPlaceholder]: "请输入密码",
 	[Key.passwordSubmit]: "解锁",
-	[Key.passwordError]: "密码错误，请重试。",
-	[Key.passwordProtectedRss]: "本文已加密保护，请访问网站查看。",
+      [Key.passwordError]: "密码错误，请重试。",
+      [Key.passwordProtectedRss]: "本文已加密保护，请访问网站查看。",
+
+      // 沉浸阅读
+      [Key.immersiveReading]: "沉浸阅读",
+      [Key.enterImmersiveReading]: "进入沉浸阅读",
+      [Key.exitImmersiveReading]: "退出沉浸阅读",
 };

@@ -390,8 +390,13 @@ enum I18nKey {
 	passwordHint = "passwordHint",
 	passwordPlaceholder = "passwordPlaceholder",
 	passwordSubmit = "passwordSubmit",
-	passwordError = "passwordError",
-	passwordProtectedRss = "passwordProtectedRss",
+      passwordError = "passwordError",
+      passwordProtectedRss = "passwordProtectedRss",
+
+      // 沉浸阅读 (immersive reading)
+      immersiveReading = "immersiveReading",
+      enterImmersiveReading = "enterImmersiveReading",
+      exitImmersiveReading = "exitImmersiveReading",
 }
 
 export default I18nKey;

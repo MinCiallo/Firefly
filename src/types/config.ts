@@ -7,6 +7,7 @@ import type {
 	WALLPAPER_OVERLAY,
 } from "../constants/constants";
 import type { NsfwMode } from "./nsfw";
+import type { ImmersiveReadingConfig } from "./immersiveReadingConfig";
 
 export type SiteConfig = {
 	title: string;
@@ -46,6 +47,12 @@ export type SiteConfig = {
 	// 提醒框配置
 	rehypeCallouts: {
 		theme: "github" | "obsidian" | "vitepress";
+	};
+
+	// 文章内容页配置（本地平铺结构，仅包含沉浸阅读；其余 post 配置仍在顶层）
+	post?: {
+		// 沉浸阅读配置：文章详情页右下角按钮，进入后只留文章卡片+目录
+		immersiveReading?: ImmersiveReadingConfig;
 	};
 
 	// bangumi配置

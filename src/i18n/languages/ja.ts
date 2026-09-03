@@ -316,6 +316,11 @@ export const ja: Translation = {
 	[Key.passwordPlaceholder]: "パスワードを入力",
 	[Key.passwordSubmit]: "ロック解除",
 	[Key.passwordError]: "パスワードが間違っています。もう一度お試しください。",
-	[Key.passwordProtectedRss]:
-		"この記事は暗号化されています。ウェブサイトにアクセスしてご覧ください。",
+      [Key.passwordProtectedRss]:
+              "この記事は暗号化されています。ウェブサイトにアクセスしてご覧ください。",
+
+      // 没入型リーディング
+      [Key.immersiveReading]: "没入型リーディング",
+      [Key.enterImmersiveReading]: "没入型リーディングに入る",
+      [Key.exitImmersiveReading]: "没入型リーディングを終了する",
 };

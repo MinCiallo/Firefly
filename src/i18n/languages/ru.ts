@@ -318,6 +318,11 @@ export const ru: Translation = {
 	[Key.passwordPlaceholder]: "Введите пароль",
 	[Key.passwordSubmit]: "Разблокировать",
 	[Key.passwordError]: "Неверный пароль, попробуйте снова.",
-	[Key.passwordProtectedRss]:
-		"Эта статья зашифрована. Пожалуйста, посетите сайт для просмотра.",
+      [Key.passwordProtectedRss]:
+              "Эта статья зашифрована. Пожалуйста, посетите сайт для просмотра.",
+
+      // Чтение без отвлечений
+      [Key.immersiveReading]: "Чтение без отвлечений",
+      [Key.enterImmersiveReading]: "Войти в режим чтения",
+      [Key.exitImmersiveReading]: "Выйти из режима чтения",
 };
