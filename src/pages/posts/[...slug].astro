@@ -31,6 +31,9 @@ import { formatDateToYYYYMMDD } from "@/utils/date-utils";
 import { getApiUrlList, processCoverImageSync } from "@/utils/image-utils";
 import { url } from "@/utils/url-utils";
 
+const showSponsorButton =
+	sponsorConfig.showButtonInPost && siteConfig.pages.sponsor;
+
 export async function getStaticPaths() {
 	const blogEntries = await getSortedPosts();
 	return blogEntries.map((entry) => {
@@ -267,7 +270,8 @@ const relatedPosts = await getRelatedPosts(entry, 5);
 
           {/* 赞助按钮 & 分享按钮 */}
           {
-            (siteConfig.sharePoster || (sponsorConfig.showButtonInPost && siteConfig.pages.sponsor)) && (
+            ((siteConfig.sharePoster && siteConfig.post?.share) ||
+              showSponsorButton) && (
               <div class="mb-6 rounded-xl onload-animation">
                 <div class="p-6 bg-(--license-block-bg) rounded-xl">
                   <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -300,7 +304,7 @@ const relatedPosts = await getRelatedPosts(entry, 5);
                     </div>
                     <div class="flex items-center gap-3">
                       {
-                        siteConfig.sharePoster && (
+                        siteConfig.sharePoster && siteConfig.post?.share && (
                           <SharePoster
                             client:load
                             title={entry.data.title}
@@ -315,7 +319,7 @@ const relatedPosts = await getRelatedPosts(entry, 5);
                         )
                       }
                       {
-                        sponsorConfig.showButtonInPost && siteConfig.pages.sponsor && (
+                        showSponsorButton && (
                           <a
                             href={url("/sponsor/")}
                             class="inline-flex items-center gap-2 px-6 py-3 bg-(--primary) text-white dark:text-black/70 rounded-lg font-medium hover:bg-(--primary)/80 hover:scale-105 active:scale-95 transition-all whitespace-nowrap"
@@ -355,7 +359,8 @@ const relatedPosts = await getRelatedPosts(entry, 5);
 
           {/* 赞助按钮 & 分享按钮 */}
           {
-            (siteConfig.sharePoster || (sponsorConfig.showButtonInPost && siteConfig.pages.sponsor)) && (
+            ((siteConfig.sharePoster && siteConfig.post?.share) ||
+              showSponsorButton) && (
               <div class="mb-6 rounded-xl onload-animation">
                 <div class="p-6 bg-(--license-block-bg) rounded-xl">
                   <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -388,7 +393,7 @@ const relatedPosts = await getRelatedPosts(entry, 5);
                     </div>
                     <div class="flex items-center gap-3">
                       {
-                        siteConfig.sharePoster && (
+                        siteConfig.sharePoster && siteConfig.post?.share && (
                           <SharePoster
                             client:load
                             title={entry.data.title}
@@ -403,7 +408,7 @@ const relatedPosts = await getRelatedPosts(entry, 5);
                         )
                       }
                       {
-                        sponsorConfig.showButtonInPost && siteConfig.pages.sponsor && (
+                        showSponsorButton && (
                           <a
                             href={url("/sponsor/")}
                             class="inline-flex items-center gap-2 px-6 py-3 bg-(--primary) text-white dark:text-black/70 rounded-lg font-medium hover:bg-(--primary)/80 hover:scale-105 active:scale-95 transition-all whitespace-nowrap"
@@ -508,9 +513,11 @@ const relatedPosts = await getRelatedPosts(entry, 5);
     }
   </script>
 
-  <div
-    class="flex flex-col md:flex-row justify-between mb-4 gap-4 overflow-hidden w-full"
-  >
+  {
+    siteConfig.post?.postNavigation && (
+      <div
+        class="flex flex-col md:flex-row justify-between mb-4 gap-4 overflow-hidden w-full"
+      >
     <a
       href={entry.data.nextSlug ? getPostUrlBySlug(entry.data.nextSlug) : url("/")}
       class="w-full font-bold overflow-hidden active:scale-95"
@@ -540,9 +547,20 @@ const relatedPosts = await getRelatedPosts(entry, 5);
         />
       </div>
     </a>
-  </div>
+      </div>
+    )
+  }
 
-  <RecommendedPost relatedPosts={relatedPosts} currentPostId={entry.id} />
+  {
+    (siteConfig.post?.relatedPosts || siteConfig.post?.randomPosts) && (
+      <RecommendedPost
+        relatedPosts={relatedPosts}
+        currentPostId={entry.id}
+        showRelatedPosts={siteConfig.post?.relatedPosts}
+        showRandomPosts={siteConfig.post?.randomPosts}
+      />
+    )
+  }
 
   <!-- 评论 -->
   {entry.data.comment && !entry.data.password && <Comment post={entry} />}

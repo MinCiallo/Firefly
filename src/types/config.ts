@@ -9,6 +9,7 @@ import type {
 import type { NsfwMode } from "./nsfw";
 import type { ImmersiveReadingConfig } from "./immersiveReadingConfig";
 
+<<<<<<< HEAD
 export type SiteConfig = {
 	title: string;
 	subtitle: string;
@@ -51,6 +52,14 @@ export type SiteConfig = {
 
 	// 文章内容页配置（本地平铺结构，仅包含沉浸阅读；其余 post 配置仍在顶层）
 	post?: {
+		// 是否显示文章页的分享按钮
+		share?: boolean;
+		// 是否显示上一篇/下一篇文章导航
+		postNavigation?: boolean;
+		// 是否显示相关文章推荐
+		relatedPosts?: boolean;
+		// 是否显示随机文章推荐
+		randomPosts?: boolean;
 		// 沉浸阅读配置：文章详情页右下角按钮，进入后只留文章卡片+目录
 		immersiveReading?: ImmersiveReadingConfig;
 	};
@@ -805,6 +814,50 @@ export type SponsorConfig = {
 	showComment?: boolean; // 是否显示评论区，默认 false
 	showButtonInPost?: boolean; // 是否在文章详情页底部显示赞助按钮，默认 true
 };
+=======
+export type {
+	ExpressiveCodeConfig,
+	PluginCollapsibleConfig,
+	PluginLanguageBadgeConfig,
+} from "./expressiveCodeConfig";
+export type { FontSelectionConfig } from "./fontConfig";
+export type { FooterConfig } from "./footerConfig";
+export type { FriendLink, FriendsPageConfig } from "./friendsConfig";
+export type { GalleryAlbum, GalleryConfig } from "./galleryConfig";
+export type { LicenseConfig } from "./licenseConfig";
+export type { MermaidConfig } from "./mermaidConfig";
+export type { MusicPlayerConfig } from "./musicConfig";
+export type {
+	NavBarConfig,
+	NavBarLink,
+	NavBarSearchConfig,
+	NavBarSearchMethod,
+} from "./navBarConfig";
+export type { Live2DWidgetConfig, SpineModelConfig } from "./pioConfig";
+export type { PlantUMLConfig } from "./plantumlConfig";
+export type { ProfileConfig } from "./profileConfig";
+export type {
+	AdConfig,
+	CalendarConfig,
+	MobileBottomComponentConfig,
+	SidebarLayoutConfig,
+	SiteInfoConfig,
+	WidgetComponentConfig,
+	WidgetComponentType,
+	WidgetSpecificConfig,
+} from "./sidebarConfig";
+export type {
+	Favicon,
+	LIGHT_DARK_MODE,
+	SiteConfig,
+	WALLPAPER_MODE,
+} from "./siteConfig";
+export type {
+	SponsorConfig,
+	SponsorItem,
+	SponsorMethod,
+} from "./sponsorConfig";
+>>>>>>> ab9e0780b (feat: 为文章底部按钮区域添加独立显示开关配置 (#617))
 
 // 响应式图像布局类型
 export type ResponsiveImageLayout = "constrained" | "full-width" | "none";
