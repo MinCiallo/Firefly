@@ -233,6 +233,14 @@ enum I18nKey {
 	rssCopied = "rssCopied",
 	rssCopyFailed = "rssCopyFailed",
 
+	// Atom页面
+	atom = "atom",
+	atomDescription = "atomDescription",
+	atomSubtitle = "atomSubtitle",
+	atomLink = "atomLink",
+	atomCopyToReader = "atomCopyToReader",
+	atomCopied = "atomCopied",
+
 	//最后编辑时间卡片
 	lastModifiedPrefix = "lastModifiedPrefix",
 	lastModifiedOutdated = "lastModifiedOutdated",

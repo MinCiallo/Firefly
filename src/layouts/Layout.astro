@@ -523,6 +523,13 @@ const siteLang = lang.replace("_", "-");
       href={`${Astro.site}rss.xml`}
     />
 
+    <link
+      rel="alternate"
+      type="application/atom+xml"
+      title={profileConfig.name}
+      href={`${Astro.site}atom.xml`}
+    />
+
     <!-- Font Manager -->
     <FontManager />
   </head>
