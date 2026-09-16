@@ -391,6 +391,7 @@ enum I18nKey {
 	galleryAlbums = "galleryAlbums",
 	galleryNoAlbums = "galleryNoAlbums",
 	galleryBackToAlbums = "galleryBackToAlbums",
+	galleryEnterAlbum = "galleryEnterAlbum",
 
 	// 密码保护
 	passwordProtected = "passwordProtected",
