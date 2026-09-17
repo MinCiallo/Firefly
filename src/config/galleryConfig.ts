@@ -17,10 +17,20 @@ export const galleryConfig: GalleryConfig = {
 			id: "sana",
 			name: "乾紗凪",
 			description: "ましろ色シンフォニー SANA EDITION",
-			location: "纯白交响曲",
+			location: "纯白交响曲SANA EDITION",
 			date: "2026-07-15",
 			cover: "/gallery/sana/sana3.jpg",
 			tags: ["纯白交响曲", "乾紗凪", "SANA"],
+		},
+		// 相册：图片在 public/gallery/otomedomain/ 目录，名称和描述信息可自行替换
+		{
+			id: "otomedomain",
+			name: "少女*领域",
+			description: "オトメ＊ドメイン",
+			location: "少女领域Kazari线",
+			date: "2026-09-16",
+			cover: "/gallery/otomedomain/otomedomain1.jpg",
+			tags: ["少女领域", "西园寺风莉线"],
 		},
 	],
 
