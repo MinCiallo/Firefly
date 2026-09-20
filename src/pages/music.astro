@@ -25,8 +25,8 @@ const description = "最近在听的音乐记录";
           {description}
         </p>
         <p class="text-xs text-neutral-400 mt-1">
-          数据由 <a href="https://www.last.fm/" target="_blank" rel="noopener" class="text-(--primary) hover:underline">Last.fm</a> 同步自 Spotify，专辑图片由 iTunes 提供
-        </p>
+          数据由 <a href="https://www.last.fm/" target="_blank" rel="noopener" class="text-(--primary) hover:underline">Last.fm</a> 同步自 Spotify，专辑图片由 QQ 音乐提供
+        </p>v
       </div>
 
       <!-- 正在播放 -->
@@ -63,6 +63,47 @@ const description = "最近在听的音乐记录";
     return img?.["#text"] || "";
   }
 
+  // QQ 音乐封面查询（Music 后缀避免与其他脚本全局冲突）：
+  // iTunes 匹配常出错（同名歌返回其他歌手专辑），Last.fm CDN 大陆不可达，
+  // 故优先用 QQ 音乐 JSONP 接口按「歌手 + 歌名」查专辑封面（国内 CDN，稳定可达）
+  var QQ_COVER_BASE_MUSIC = "https://y.gtimg.cn/music/photo_new/T002R300x300M000";
+  var qqCoverSeqMusic = 0;
+
+  function qqCoverLookupMusic(artist, song) {
+    var key = "qq-cover:" + artist + "|" + song;
+    try {
+      var cached = JSON.parse(localStorage.getItem(key) || "null");
+      if (cached && Date.now() - cached.t < (cached.mid ? 14 : 1) * 86400000) {
+        return Promise.resolve(cached.mid ? QQ_COVER_BASE_MUSIC + cached.mid + ".jpg" : "");
+      }
+    } catch (e) {}
+
+    return new Promise(function (resolve) {
+      var cb = "qqCoverMusicCb" + (++qqCoverSeqMusic) + "_" + Date.now();
+      var timer = setTimeout(function () { cleanup(); resolve(""); }, 6000);
+      function cleanup() {
+        clearTimeout(timer);
+        try { delete window[cb]; } catch (e) { window[cb] = undefined; }
+        var el = document.getElementById(cb);
+        if (el) el.remove();
+      }
+      window[cb] = function (res) {
+        cleanup();
+        var mid = "";
+        var list = (res && res.data && res.data.song && res.data.song.list) || [];
+        for (var i = 0; i < list.length; i++) {
+          if (list[i] && list[i].albummid) { mid = list[i].albummid; break; }
+        }
+        try { localStorage.setItem(key, JSON.stringify({ mid: mid, t: Date.now() })); } catch (e) {}
+        resolve(mid ? QQ_COVER_BASE_MUSIC + mid + ".jpg" : "");
+      };
+      var script = document.createElement("script");
+      script.id = cb;
+      script.src = "https://c.y.qq.com/soso/fcgi-bin/client_search_cp?format=jsonp&jsonpCallback=" + cb + "&n=5&w=" + encodeURIComponent((artist || "") + " " + (song || ""));
+      document.head.appendChild(script);
+    });
+  }
+
   async function loadTracks() {
     const nowPlaying = document.getElementById("now-playing");
     const list = document.getElementById("track-list");
@@ -81,8 +122,16 @@ const description = "最近在听的音乐记录";
       const np = !tracks[0].date ? tracks[0] : null;
       const recent = np ? tracks.slice(1, 11) : tracks.slice(0, 10);
 
+      // 并行解析 QQ 音乐封面，失败时回退 albumArt / Last.fm 图
+      const coverMap = new Map();
+      await Promise.all([...(np ? [np] : []), ...recent].map(async (t) => {
+        const cover = await qqCoverLookupMusic(t.artist?.["#text"] || "", t.name || "");
+        coverMap.set(t, cover || getImage(t));
+      }));
+
       // 正在播放卡片
       if (np) {
+        const npCover = coverMap.get(np);
         nowPlaying.classList.remove("hidden");
         nowPlaying.innerHTML = `
           <div class="rounded-xl border border-(--primary)/20 bg-(--primary)/3 p-5">
@@ -91,9 +140,9 @@ const description = "最近在听的音乐记录";
               <span class="text-sm font-bold text-green-500">正在播放</span>
             </div>
             <div class="flex gap-4">
-              <img src="${getImage(np)}" alt="${np.name}"
+              ${npCover ? `<img src="${npCover}" alt="${np.name}"
                    class="w-24 h-24 rounded-xl object-cover shadow-lg shrink-0"
-                   onerror="this.style.display='none'" />
+                   onerror="this.remove()" />` : ""}
               <div class="flex flex-col justify-center min-w-0">
                 <a href="${np.url || '#'}" target="_blank" rel="noopener"
                    class="text-xl font-bold text-neutral-900 dark:text-neutral-100 hover:text-(--primary) transition truncate">
@@ -113,9 +162,9 @@ const description = "最近在听的音乐记录";
         <a href="${t.url || '#'}" target="_blank" rel="noopener"
            class="flex items-center gap-3 py-2.5 px-3 -mx-3 rounded-lg group hover:bg-(--primary)/5 transition border-b border-(--line-divider) last:border-0">
           <span class="text-xs text-neutral-400 w-6 text-right shrink-0">${i + 1}</span>
-          <img src="${getImage(t)}" alt="${t.name}"
+          ${coverMap.get(t) ? `<img src="${coverMap.get(t)}" alt="${t.name}"
                class="h-11 w-11 rounded-lg object-cover shrink-0"
-               onerror="this.style.display='none'" />
+               onerror="this.remove()" />` : ""}
           <div class="flex-1 min-w-0">
             <div class="text-sm font-medium text-neutral-800 dark:text-neutral-200 truncate group-hover:text-(--primary) transition">
               ${t.name || "未知歌曲"}

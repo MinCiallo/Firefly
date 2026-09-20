@@ -33,6 +33,46 @@ const { class: className, style } = Astro.props;
     return img?.["#text"] || "";
   }
 
+  // QQ 音乐封面查询：iTunes 匹配常出错（同名歌返回其他歌手专辑），Last.fm CDN 大陆不可达，
+  // 故优先用 QQ 音乐 JSONP 接口按「歌手 + 歌名」查专辑封面（国内 CDN，稳定可达）
+  const QQ_COVER_BASE = "https://y.gtimg.cn/music/photo_new/T002R300x300M000";
+  let qqCoverSeq = 0;
+
+  function qqCoverLookup(artist, song) {
+    const key = "qq-cover:" + artist + "|" + song;
+    try {
+      const cached = JSON.parse(localStorage.getItem(key) || "null");
+      if (cached && Date.now() - cached.t < (cached.mid ? 14 : 1) * 86400000) {
+        return Promise.resolve(cached.mid ? QQ_COVER_BASE + cached.mid + ".jpg" : "");
+      }
+    } catch (e) {}
+
+    return new Promise((resolve) => {
+      const cb = "qqCoverCb" + (++qqCoverSeq) + "_" + Date.now();
+      const timer = setTimeout(() => { cleanup(); resolve(""); }, 6000);
+      function cleanup() {
+        clearTimeout(timer);
+        try { delete window[cb]; } catch (e) { window[cb] = undefined; }
+        const el = document.getElementById(cb);
+        if (el) el.remove();
+      }
+      window[cb] = function (res) {
+        cleanup();
+        let mid = "";
+        const list = (res && res.data && res.data.song && res.data.song.list) || [];
+        for (const item of list) {
+          if (item && item.albummid) { mid = item.albummid; break; }
+        }
+        try { localStorage.setItem(key, JSON.stringify({ mid: mid, t: Date.now() })); } catch (e) {}
+        resolve(mid ? QQ_COVER_BASE + mid + ".jpg" : "");
+      };
+      const script = document.createElement("script");
+      script.id = cb;
+      script.src = "https://c.y.qq.com/soso/fcgi-bin/client_search_cp?format=jsonp&jsonpCallback=" + cb + "&n=5&w=" + encodeURIComponent((artist || "") + " " + (song || ""));
+      document.head.appendChild(script);
+    });
+  }
+
   async function loadLastFm() {
     const container = document.getElementById("lastfm-widget");
     if (!container) return;
@@ -49,11 +89,18 @@ const { class: className, style } = Astro.props;
       const np = !tracks[0].date ? tracks[0] : null;
       const recent = np ? tracks.slice(1, 4) : tracks.slice(0, 3);
 
+      // 并行解析 QQ 音乐封面，失败时回退 albumArt / Last.fm 图
+      const coverMap = new Map();
+      await Promise.all([...(np ? [np] : []), ...recent].map(async (t) => {
+        const cover = await qqCoverLookup(t.artist?.["#text"] || "", t.name || "");
+        coverMap.set(t, cover || getImage(t));
+      }));
+
       let html = "";
 
       // 正在播放
       if (np) {
-        const img = getImage(np);
+        const img = coverMap.get(np);
         html += `
           <div class="mb-2.5">
             <div class="flex items-center gap-1 mb-1.5">
@@ -79,7 +126,7 @@ const { class: className, style } = Astro.props;
       if (recent.length > 0) {
         html += `<div class="${np ? "border-t border-(--line-divider) pt-2" : ""}">`;
         recent.forEach((t, i) => {
-          const imgSrc = getImage(t);
+          const imgSrc = coverMap.get(t);
           if (imgSrc) {
             html += `<a href="${t.url || '#'}" target="_blank" rel="noopener"
                class="flex items-center gap-2 py-1.5 px-1.5 -mx-1.5 rounded-md group hover:bg-(--primary)/5 transition">
