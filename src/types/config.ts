@@ -9,7 +9,6 @@ import type {
 import type { NsfwMode } from "./nsfw";
 import type { ImmersiveReadingConfig } from "./immersiveReadingConfig";
 
-<<<<<<< HEAD
 export type SiteConfig = {
 	title: string;
 	subtitle: string;
@@ -201,6 +200,16 @@ export type SiteConfig = {
 		 * 仅影响匹配域名的图片标签，不影响其他链接的 referrer 行为
 		 */
 		noReferrerDomains?: string[];
+	};
+
+	// 订阅 (RSS / Atom) 配置
+	feed?: {
+		/**
+		 * 订阅条目内容模式：
+		 * - "full": 包含文章正文全文（默认）
+		 * - "summary": 仅包含文章摘要/描述，不含正文
+		 */
+		contentMode?: "full" | "summary";
 	};
 };
 
@@ -814,50 +823,6 @@ export type SponsorConfig = {
 	showComment?: boolean; // 是否显示评论区，默认 false
 	showButtonInPost?: boolean; // 是否在文章详情页底部显示赞助按钮，默认 true
 };
-=======
-export type {
-	ExpressiveCodeConfig,
-	PluginCollapsibleConfig,
-	PluginLanguageBadgeConfig,
-} from "./expressiveCodeConfig";
-export type { FontSelectionConfig } from "./fontConfig";
-export type { FooterConfig } from "./footerConfig";
-export type { FriendLink, FriendsPageConfig } from "./friendsConfig";
-export type { GalleryAlbum, GalleryConfig } from "./galleryConfig";
-export type { LicenseConfig } from "./licenseConfig";
-export type { MermaidConfig } from "./mermaidConfig";
-export type { MusicPlayerConfig } from "./musicConfig";
-export type {
-	NavBarConfig,
-	NavBarLink,
-	NavBarSearchConfig,
-	NavBarSearchMethod,
-} from "./navBarConfig";
-export type { Live2DWidgetConfig, SpineModelConfig } from "./pioConfig";
-export type { PlantUMLConfig } from "./plantumlConfig";
-export type { ProfileConfig } from "./profileConfig";
-export type {
-	AdConfig,
-	CalendarConfig,
-	MobileBottomComponentConfig,
-	SidebarLayoutConfig,
-	SiteInfoConfig,
-	WidgetComponentConfig,
-	WidgetComponentType,
-	WidgetSpecificConfig,
-} from "./sidebarConfig";
-export type {
-	Favicon,
-	LIGHT_DARK_MODE,
-	SiteConfig,
-	WALLPAPER_MODE,
-} from "./siteConfig";
-export type {
-	SponsorConfig,
-	SponsorItem,
-	SponsorMethod,
-} from "./sponsorConfig";
->>>>>>> ab9e0780b (feat: 为文章底部按钮区域添加独立显示开关配置 (#617))
 
 // 响应式图像布局类型
 export type ResponsiveImageLayout = "constrained" | "full-width" | "none";
