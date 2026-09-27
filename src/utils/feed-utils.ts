@@ -1,8 +1,7 @@
 import { loadRenderers } from "astro:container";
 import type { CollectionEntry } from "astro:content";
 import { render } from "astro:content";
-import { getContainerRenderer as getMDXRenderer } from "@astrojs/mdx/container-renderer";
-import { getContainerRenderer as getSvelteRenderer } from "@astrojs/svelte/container-renderer";
+import { getContainerRenderer as getMDXRenderer } from "@astrojs/mdx";
 import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
 import { url } from "@utils/url-utils";
@@ -97,7 +96,6 @@ export async function renderFeedEntries(
 	const { includeContent = true } = opts;
 	const renderers = await loadRenderers([
 		getMDXRenderer(),
-		getSvelteRenderer(),
 	]);
 	const container = await AstroContainer.create({ renderers });
 	const entries: FeedEntry[] = [];
