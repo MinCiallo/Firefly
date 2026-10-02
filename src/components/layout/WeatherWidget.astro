@@ -2,62 +2,113 @@
 // 导航栏天气小组件：显示访客所在城市的实时天气
 // 定位：EdgeOne 边缘函数 /api/geo（随站点部署在 EdgeOne Pages，无需自建后端）
 // 天气：Open-Meteo 免费接口（无需密钥，原生支持 CORS）
+// 图标：内置简约线条风格 SVG（类 Apple 天气设计），矢量渲染任意分辨率清晰，
+//       线条主体用 currentColor 继承导航栏文字色（自动适配明暗模式），彩色点缀固定
 // 行为：骨架屏防偏移 → 渲染结果；任一环节失败则整体移除，不留空占位
 ---
 
-<div id="navbar-weather" class="hidden md:flex items-center h-10 px-3 rounded-lg text-sm font-bold text-black/75 dark:text-white/75" title="正在获取当地天气">
+<div id="navbar-weather" class="hidden md:flex items-center gap-1.5 h-10 px-3 rounded-lg text-sm font-bold text-black/75 dark:text-white/75" title="正在获取当地天气">
     <div class="h-4 w-24 rounded-md bg-black/15 dark:bg-white/15 animate-pulse"></div>
 </div>
 
+<style is:global>
+    /* 天气图标配色：线条主体继承文字色，点缀色清新自然、明暗模式均可读 */
+    .navbar-wx-icon {
+        width: 1.25rem;
+        height: 1.25rem;
+        flex-shrink: 0;
+    }
+    .wx-sun {
+        stroke: #f6a821;
+    }
+    .wx-sun-fill {
+        fill: #f6a821;
+    }
+    .wx-bolt {
+        stroke: #f6a821;
+    }
+    .wx-rain {
+        stroke: #4a9df8;
+    }
+    .wx-snow {
+        stroke: #4fb3f6;
+    }
+</style>
+
 <script>
-    const CACHE_KEY = "navbar-weather";
+    const CACHE_KEY = "navbar-weather-v2";
     const CACHE_TTL = 60 * 60 * 1000; // 缓存 1 小时
 
-    // WMO 天气代码 → [emoji, 中文描述]
+    // 简约线条风天气图标（24 viewBox，圆角线帽，主体 currentColor）
+    const ICONS = {
+        // 晴：太阳（实心圆盘 + 光线）
+        sun: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="navbar-wx-icon" aria-hidden="true"><circle cx="12" cy="12" r="5" class="wx-sun wx-sun-fill"/><line x1="12" y1="1" x2="12" y2="3" class="wx-sun"/><line x1="12" y1="21" x2="12" y2="23" class="wx-sun"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64" class="wx-sun"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" class="wx-sun"/><line x1="1" y1="12" x2="3" y2="12" class="wx-sun"/><line x1="21" y1="12" x2="23" y2="12" class="wx-sun"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36" class="wx-sun"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" class="wx-sun"/></svg>`,
+        // 多云：小太阳 + 右下角云
+        sunCloud: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="navbar-wx-icon" aria-hidden="true"><circle cx="9" cy="9" r="3.75" class="wx-sun wx-sun-fill"/><line x1="9" y1="2" x2="9" y2="3.6" class="wx-sun"/><line x1="2" y1="9" x2="3.6" y2="9" class="wx-sun"/><line x1="3.8" y1="3.8" x2="4.9" y2="4.9" class="wx-sun"/><line x1="13.1" y1="4.9" x2="14.2" y2="3.8" class="wx-sun"/><line x1="14.4" y1="9" x2="16" y2="9" class="wx-sun"/><g transform="translate(6.2 8) scale(0.72)"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></g></svg>`,
+        // 阴：云
+        cloud: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="navbar-wx-icon" aria-hidden="true"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>`,
+        // 雾：云 + 雾线
+        fog: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="navbar-wx-icon" aria-hidden="true"><g transform="translate(0 -2)"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></g><line x1="4.5" y1="19.5" x2="19.5" y2="19.5"/><line x1="7" y1="22.5" x2="17" y2="22.5"/></svg>`,
+        // 毛毛雨：云 + 短雨丝
+        drizzle: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="navbar-wx-icon" aria-hidden="true"><path d="M20 16.58A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25"/><line x1="8" y1="18" x2="8" y2="19.5" class="wx-rain"/><line x1="12" y1="19.5" x2="12" y2="21" class="wx-rain"/><line x1="16" y1="18" x2="16" y2="19.5" class="wx-rain"/></svg>`,
+        // 雨：云 + 斜向雨丝
+        rain: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="navbar-wx-icon" aria-hidden="true"><path d="M20 16.58A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25"/><line x1="8" y1="15.5" x2="7" y2="20.5" class="wx-rain"/><line x1="12" y1="16.5" x2="11" y2="21.5" class="wx-rain"/><line x1="16" y1="15.5" x2="15" y2="20.5" class="wx-rain"/></svg>`,
+        // 阵雨：云 + 长短雨丝
+        shower: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="navbar-wx-icon" aria-hidden="true"><path d="M20 16.58A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25"/><line x1="9" y1="15.5" x2="7.5" y2="21.5" class="wx-rain"/><line x1="14" y1="15.5" x2="12.5" y2="21.5" class="wx-rain"/><line x1="18" y1="15" x2="17.2" y2="18" class="wx-rain"/></svg>`,
+        // 雪：云 + 雪点
+        snow: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="navbar-wx-icon" aria-hidden="true"><path d="M20 16.58A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25"/><line x1="8" y1="17" x2="8" y2="17.01" class="wx-snow"/><line x1="12" y1="19" x2="12" y2="19.01" class="wx-snow"/><line x1="16" y1="17" x2="16" y2="17.01" class="wx-snow"/><line x1="10" y1="21" x2="10" y2="21.01" class="wx-snow"/><line x1="14" y1="21" x2="14" y2="21.01" class="wx-snow"/></svg>`,
+        // 雷阵雨：云 + 闪电
+        bolt: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="navbar-wx-icon" aria-hidden="true"><path d="M19 16.9A5 5 0 0 0 18 7h-1.26a8 8 0 1 0-11.62 9"/><polyline points="13 11 9 17 15 17 11 23" class="wx-bolt"/></svg>`,
+    };
+
+    // WMO 天气代码 → [图标名, 中文描述]
     const WMO_MAP = {
-        0: ["☀️", "晴"],
-        1: ["🌤️", "基本晴"],
-        2: ["⛅", "多云"],
-        3: ["☁️", "阴"],
-        45: ["🌫️", "雾"],
-        48: ["🌫️", "冻雾"],
-        51: ["🌦️", "小毛毛雨"],
-        53: ["🌦️", "毛毛雨"],
-        55: ["🌦️", "大毛毛雨"],
-        56: ["🌧️", "冻毛毛雨"],
-        57: ["🌧️", "强冻毛毛雨"],
-        61: ["🌧️", "小雨"],
-        63: ["🌧️", "中雨"],
-        65: ["🌧️", "大雨"],
-        66: ["🌧️", "冻雨"],
-        67: ["🌧️", "强冻雨"],
-        71: ["🌨️", "小雪"],
-        73: ["🌨️", "中雪"],
-        75: ["❄️", "大雪"],
-        77: ["🌨️", "米雪"],
-        80: ["🌦️", "小阵雨"],
-        81: ["🌦️", "阵雨"],
-        82: ["⛈️", "强阵雨"],
-        85: ["🌨️", "小阵雪"],
-        86: ["🌨️", "大阵雪"],
-        95: ["⛈️", "雷阵雨"],
-        96: ["⛈️", "雷阵雨伴冰雹"],
-        99: ["⛈️", "强雷阵雨伴冰雹"],
+        0: ["sun", "晴"],
+        1: ["sun", "基本晴"],
+        2: ["sunCloud", "多云"],
+        3: ["cloud", "阴"],
+        45: ["fog", "雾"],
+        48: ["fog", "冻雾"],
+        51: ["drizzle", "小毛毛雨"],
+        53: ["drizzle", "毛毛雨"],
+        55: ["drizzle", "大毛毛雨"],
+        56: ["drizzle", "冻毛毛雨"],
+        57: ["drizzle", "强冻毛毛雨"],
+        61: ["rain", "小雨"],
+        63: ["rain", "中雨"],
+        65: ["rain", "大雨"],
+        66: ["rain", "冻雨"],
+        67: ["rain", "强冻雨"],
+        71: ["snow", "小雪"],
+        73: ["snow", "中雪"],
+        75: ["snow", "大雪"],
+        77: ["snow", "米雪"],
+        80: ["shower", "小阵雨"],
+        81: ["shower", "阵雨"],
+        82: ["shower", "强阵雨"],
+        85: ["snow", "小阵雪"],
+        86: ["snow", "大阵雪"],
+        95: ["bolt", "雷阵雨"],
+        96: ["bolt", "雷阵雨伴冰雹"],
+        99: ["bolt", "强雷阵雨伴冰雹"],
     };
 
     function wmoInfo(code) {
-        return WMO_MAP[code] || ["🌡️", "未知"];
+        return WMO_MAP[code] || ["cloud", "未知"];
     }
 
     function render(el, data) {
         // 城市名去掉结尾的「市」，显示更简洁（如「南昌市」→「南昌」）
         const cityName = data.city.replace(/市$/, "");
+        const icon = ICONS[data.icon];
         el.innerHTML = "";
-        el.title = `${cityName} · ${data.desc} · ${data.temp}°C`;
+        // icon 是内置常量字符串，可安全插入；城市名等动态内容走 textContent 防注入
+        if (icon) el.insertAdjacentHTML("beforeend", icon);
         const span = document.createElement("span");
         span.className = "whitespace-nowrap";
-        span.textContent = `${data.icon} ${data.temp}° ${cityName}`;
+        span.textContent = `${data.temp}° ${cityName}`;
         el.appendChild(span);
+        el.title = `${cityName} · ${data.desc} · ${data.temp}°C`;
     }
 
     function hide(el) {
