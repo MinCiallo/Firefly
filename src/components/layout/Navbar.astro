@@ -18,6 +18,7 @@ import { isHomePage } from "@/utils/layout-utils";
 import { url } from "@/utils/url-utils";
 import DropdownMenu from "./DropdownMenu.astro";
 import NavMenuPanel from "./NavMenuPanel.astro";
+import WeatherWidget from "./WeatherWidget.astro";
 
 const className = Astro.props.class;
 
@@ -134,6 +135,7 @@ if (isLocalSrcLogo) {
                 })}
             </div>
             <div class="flex col-start-3 justify-self-end">
+                <WeatherWidget />
                 <!--<SearchPanel client:load>-->
                 <Search
                     client:load
