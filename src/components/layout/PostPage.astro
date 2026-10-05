@@ -388,8 +388,13 @@ const initialLayoutClass =
     padding: 1rem !important;
   }
 
+  /* 网格模式：无封面卡片不保留右侧箭头按钮占位，内容占满整卡 */
   #post-list-container.grid-mode :global(.no-cover .post-card-content) {
-    padding-right: 4.5rem !important;
+    padding-right: 1rem !important;
+  }
+
+  #post-list-container.grid-mode :global(.no-cover .post-card-enter-btn) {
+    display: none !important;
   }
 
   #post-list-container.grid-mode :global(.post-card-title) {
