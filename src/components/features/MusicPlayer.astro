@@ -47,7 +47,7 @@ const widgetId =
     </div>
 
     <!-- Info Section -->
-    <div class="flex-1 min-w-0 flex flex-col overflow-hidden">
+    <div class="flex-1 min-w-0 flex flex-col">
         <div class="flex items-center justify-between overflow-hidden gap-2">
             <div class="flex-1 min-w-0 overflow-hidden relative">
                 <h3 class="music-title font-bold text-base text-neutral-800 dark:text-neutral-100 leading-tight truncate">
@@ -82,7 +82,7 @@ const widgetId =
                     <Icon name="material-symbols:volume-off-rounded" class="icon-vol-mute text-lg hidden" aria-hidden="true" />
                 </button>
                 <div class="w-16 transition-all duration-300 ease-out flex items-center">
-                    <div class="vol-container h-1 w-16 bg-neutral-200 dark:bg-neutral-600 rounded-full cursor-pointer relative ml-1" role="slider" aria-label={i18n(I18nKey.musicVolume)} aria-valuemin="0" aria-valuemax="100" aria-valuenow="70">
+                    <div class="vol-container h-1 w-16 bg-neutral-200 dark:bg-neutral-600 rounded-full cursor-pointer relative touch-none before:absolute before:-inset-y-2 before:inset-x-0" tabindex="0" role="slider" aria-label={i18n(I18nKey.musicVolume)} aria-valuemin="0" aria-valuemax="100" aria-valuenow="70">
                         <div class="vol-bar absolute left-0 top-0 h-full bg-(--primary) rounded-full w-[70%]"></div>
                     </div>
                 </div>
@@ -93,7 +93,7 @@ const widgetId =
 
 <!-- Progress Bar (Slim) -->
 <div class="px-1">
-    <div class="progress-container relative w-full h-1 bg-neutral-100 dark:bg-neutral-700/50 rounded-full cursor-pointer touch-none mb-2 group mt-2" role="slider" aria-label={i18n(I18nKey.musicProgress)} aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+    <div class="progress-container relative w-full h-1 bg-neutral-100 dark:bg-neutral-700/50 rounded-full cursor-pointer touch-none mb-2 group mt-2 before:absolute before:-inset-y-2 before:inset-x-0" tabindex="0" role="slider" aria-label={i18n(I18nKey.musicProgress)} aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
         <div class="progress-bar absolute left-0 top-0 h-full bg-(--primary) rounded-full w-0 transition-[width] duration-100"></div>
         <!-- Hover Thumb -->
         <div class="progress-thumb absolute top-1/2 -mt-1.5 -ml-1.5 w-3 h-3 bg-(--primary) ring-2 ring-white dark:ring-neutral-800 rounded-full shadow-sm scale-0 group-hover:scale-100 transition-transform duration-200"></div>
@@ -101,7 +101,7 @@ const widgetId =
 </div>
 
 <!-- Controls Row -->
-<div class="flex items-center justify-between px-1 select-none">
+<div class="flex items-center justify-between px-1 py-1.5 select-none">
     <!-- Repeat Mode -->
     <button class="btn-repeat text-neutral-300 dark:text-neutral-600 hover:text-(--primary) transition-colors p-2 active:scale-95" title={i18n(I18nKey.musicPlayMode)} aria-label={i18n(I18nKey.musicPlayMode)}>
         <Icon name="material-symbols:repeat-rounded" class="icon-repeat text-xl" aria-hidden="true" />
@@ -540,19 +540,48 @@ const widgetId =
     ui.btnRepeat.addEventListener('click', function () { mgr.cyclePlayMode(); });
     ui.btnMute.addEventListener('click', function () { mgr.toggleMute(); });
 
-    ui.volContainer.addEventListener('click', function (e) {
-        var rect = ui.volContainer.getBoundingClientRect();
-        var x = e.clientX - rect.left;
-        var val = Math.max(0, Math.min(1, x / rect.width));
-        mgr.setVolume(val);
-    });
-
-    ui.progressContainer.addEventListener('click', function (e) {
-        var rect = ui.progressContainer.getBoundingClientRect();
-        var clickX = e.clientX - rect.left;
-        var percent = Math.min(Math.max(clickX / rect.width, 0), 1);
-        mgr.seek(percent);
-    });
+    // Pointer capture keeps dragging active outside the narrow slider track.
+    function bindSlider(element, update, readValue, step) {
+        var pointerId = null;
+        function valueAt(e) {
+            var rect = element.getBoundingClientRect();
+            return rect.width > 0 ? Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width)) : 0;
+        }
+        element.addEventListener('pointerdown', function (e) {
+            if (!e.isPrimary || e.button !== 0 || pointerId !== null) return;
+            e.preventDefault();
+            pointerId = e.pointerId;
+            element.setPointerCapture(pointerId);
+            update(valueAt(e));
+        });
+        element.addEventListener('pointermove', function (e) {
+            if (e.pointerId === pointerId) update(valueAt(e));
+        });
+        function finish(e) {
+            if (e.pointerId !== pointerId) return;
+            if (e.type === 'pointerup') update(valueAt(e));
+            pointerId = null;
+            if (element.hasPointerCapture(e.pointerId)) element.releasePointerCapture(e.pointerId);
+        }
+        element.addEventListener('pointerup', finish);
+        element.addEventListener('pointercancel', finish);
+        element.addEventListener('lostpointercapture', function () { pointerId = null; });
+        element.addEventListener('keydown', function (e) {
+            var value = readValue();
+            if (e.key === 'ArrowRight' || e.key === 'ArrowUp') value += step();
+            else if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') value -= step();
+            else if (e.key === 'Home') value = 0;
+            else if (e.key === 'End') value = 1;
+            else return;
+            e.preventDefault();
+            update(Math.max(0, Math.min(1, value)));
+        });
+    }
+    bindSlider(ui.volContainer, function (value) { mgr.setVolume(value); },
+        function () { return mgr.getState().volume; }, function () { return 0.05; });
+    bindSlider(ui.progressContainer, function (value) { mgr.seek(value); },
+        function () { return mgr.getState().progress / 100; },
+        function () { return 5 / (mgr.getState().duration || 100); });
 
     // ── Drawer logic (local state) ───────────────────────────
     ui.btnLrc.addEventListener('click', function () {
