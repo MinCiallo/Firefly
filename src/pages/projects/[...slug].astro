@@ -1,0 +1,44 @@
+---
+import { render } from "astro:content";
+import { Icon } from "astro-icon/components";
+import Markdown from "@/components/common/Markdown.astro";
+import CoverImage from "@/components/common/CoverImage.astro";
+import MainGridLayout from "@/layouts/MainGridLayout.astro";
+import { siteConfig } from "@/config";
+import { getSortedProjects } from "@/utils/content-utils";
+import { getProjectStatusMeta } from "@/utils/projects-utils";
+import { getFileDirFromPath, url } from "@/utils/url-utils";
+import { formatDateToYYYYMMDD } from "@/utils/date-utils";
+import I18nKey from "@/i18n/i18nKey";
+import { i18n } from "@/i18n/translation";
+
+export async function getStaticPaths() {
+    if (!siteConfig.pages.projects) return [];
+    return (await getSortedProjects()).map(entry => ({ params: { slug: entry.id }, props: { entry } }));
+}
+const { entry } = Astro.props;
+const { Content, headings } = await render(entry);
+const { title, description, image, tags, published, status, link } = entry.data;
+const statusMeta = getProjectStatusMeta(status);
+---
+<MainGridLayout title={title} description={description || title} headings={headings}>
+    <article class="card-base p-6 md:p-9">
+        <a href={url("/projects/")} class="inline-flex items-center gap-1 text-(--primary) mb-5 hover:underline">
+            <Icon name="material-symbols:arrow-back" />{i18n(I18nKey.projectBack)}
+        </a>
+        <header class="mb-6">
+            <h1 class="text-3xl font-bold text-black/90 dark:text-white/90" data-pagefind-meta="title">{title}</h1>
+            <div class="flex flex-wrap gap-3 items-center my-3 text-sm text-black/60 dark:text-white/60">
+                <time datetime={published.toISOString()}>{formatDateToYYYYMMDD(published)}</time>
+                {status && <span class:list={["rounded-full px-3 py-1", statusMeta.className]}>{statusMeta.label}</span>}
+                {tags.map(tag => <span>#{tag}</span>)}
+            </div>
+            {description && <p class="text-black/60 dark:text-white/60">{description}</p>}
+            <div class="flex flex-wrap gap-3 mt-4">
+                {link.map(item => <a href={item.value} target="_blank" rel="noopener noreferrer" class="rounded-lg bg-(--primary)/10 px-4 py-2 text-sm text-(--primary) hover:bg-(--primary)/20">{item.label} ↗</a>)}
+            </div>
+        </header>
+        {image && <CoverImage src={image} alt={title} basePath={getFileDirFromPath(entry.filePath || "")} class="rounded-xl mb-6 aspect-video" preview={false} />}
+        <Markdown class="project-content"><Content /></Markdown>
+    </article>
+</MainGridLayout>

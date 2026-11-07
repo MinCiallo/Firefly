@@ -9,6 +9,7 @@ import {
 	getImageQuality,
 	shouldAddNoReferrer,
 } from "@/utils/image-utils";
+import { getLqipProps } from "@/utils/lqip-utils";
 import { url } from "@/utils/url-utils";
 
 interface Props {
@@ -79,6 +80,7 @@ if (isLocal) {
 	}
 }
 
+const lqip = getLqipProps(src, basePath);
 const imageClass = "w-full h-full object-cover";
 const imageStyle = `object-position: ${position}`;
 
@@ -95,7 +97,7 @@ const responsiveProps = {
 	...(quality && { quality }),
 };
 ---
-<div id={id} class:list={[className, 'overflow-hidden relative']}>
+<div id={id} data-lqip style={lqip.style} class:list={[className, 'overflow-hidden relative']}>
     <div class="transition absolute inset-0 dark:bg-black/10 pointer-events-none"></div>
     {isLocal && img && usePicture && (
         <Picture

@@ -1,4 +1,5 @@
 ---
+import { getLqipProps } from "@/utils/lqip-utils";
 interface Props {
 	src: string;
 	albumId: string;
@@ -6,10 +7,13 @@ interface Props {
 }
 
 const { src, albumId, alt = "" } = Astro.props;
+const lqip = getLqipProps(src);
 ---
 
 <div class="gallery-photo-card break-inside-avoid mb-3">
   <div
+    data-lqip
+    style={lqip.style}
     data-fancybox={`gallery-${albumId}`}
     data-src={src}
     data-type="image"
@@ -17,6 +21,8 @@ const { src, albumId, alt = "" } = Astro.props;
   >
     <img
       src={src}
+      width={lqip.width}
+      height={lqip.height}
       alt={alt}
       loading="lazy"
       decoding="async"

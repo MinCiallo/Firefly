@@ -22,6 +22,8 @@ const postsCollection = defineCollection({
 		comment: z.boolean().optional().default(true),
 		password: z.string().optional().default(""),
 		passwordHint: z.string().optional().default(""),
+		series: z.string().optional().default(""),
+		seriesOrder: z.number().optional(),
 
 		/* For internal use */
 		prevTitle: z.string().default(""),
@@ -43,7 +45,28 @@ const dynamicCollection = defineCollection({
 	}),
 });
 
+const projectsCollection = defineCollection({
+    loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/projects" }),
+    schema: z.object({
+        title: z.string(),
+        published: z.date(),
+        draft: z.boolean().default(false),
+        order: z.number().optional(),
+        description: z.string().default(""),
+        image: z.string().default(""),
+        tags: z.array(z.string()).default([]),
+        status: z.string().default(""),
+        lang: z.string().default(""),
+        link: z.array(z.object({
+            label: z.string(),
+            icon: z.string().default(""),
+            value: z.string().refine((value) => /^https?:\/\//i.test(value), "项目链接必须使用 http(s) URL"),
+        })).default([]),
+    }),
+});
+
 export const collections = {
+    projects: projectsCollection,
 	posts: postsCollection,
 	spec: specCollection,
 	dynamic: dynamicCollection,

@@ -10,6 +10,7 @@ import {
 	getImageQuality,
 	shouldAddNoReferrer,
 } from "@/utils/image-utils";
+import { getLqipProps } from "@/utils/lqip-utils";
 import { url } from "@/utils/url-utils";
 
 interface Props {
@@ -106,7 +107,8 @@ const sizes = preview
 const quality = preview ? Math.round(configQuality * 0.9) : configQuality;
 
 // 是否显示加载动画
-const showLoading = coverImageConfig.randomCoverImage.showLoading ?? true;
+const lqip = getLqipProps(src, basePath);
+const showLoading = !lqip.known && (coverImageConfig.randomCoverImage.showLoading ?? true);
 
 // 检查回退图片是否需要 referrerpolicy
 const fallbackReferrerPolicy =
@@ -123,6 +125,8 @@ const remoteReferrerPolicy =
 
 <div
 	id={id}
+	data-lqip
+	style={lqip.style}
 	class:list={[className, "cover-image-container overflow-hidden relative"]}
 	data-loading={showLoading ? "true" : "false"}
 	data-api-urls={apiUrls.length > 0 ? JSON.stringify(apiUrls) : undefined}

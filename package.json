@@ -3,10 +3,10 @@
   "type": "module",
   "version": "6.9.4",
   "scripts": {
-    "dev": "astro dev",
-    "start": "astro dev",
+    "dev": "node scripts/generate-lqips.mjs && astro dev",
+    "start": "node scripts/generate-lqips.mjs && astro dev",
     "check": "astro check",
-    "build": "node scripts/generate-icons.js && astro build && pagefind --site dist",
+    "build": "node scripts/generate-icons.js && node scripts/generate-lqips.mjs && astro build && pagefind --site dist",
     "preview": "astro preview",
     "astro": "astro",
     "type-check": "tsc --noEmit --isolatedDeclarations",
@@ -15,7 +15,8 @@
     "format": "biome format --write ./src",
     "lint": "biome check --write ./src",
     "preinstall": "npx only-allow pnpm",
-    "icons": "node scripts/generate-icons.js"
+    "icons": "node scripts/generate-icons.js",
+    "lqips": "node scripts/generate-lqips.mjs"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.8",
@@ -45,6 +46,7 @@
     "dayjs": "^1.11.20",
     "expressive-code-collapsible": "^0.1.0",
     "expressive-code-language-badge": "^1.1.0",
+    "github-slugger": "^2.0.0",
     "glob": "^11.1.0",
     "gray-matter": "^4.0.3",
     "hastscript": "^9.0.1",

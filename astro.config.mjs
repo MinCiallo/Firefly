@@ -16,6 +16,8 @@ import "katex/dist/contrib/mhchem.mjs"; // 加载 mhchem 扩展
 import rehypeSlug from "rehype-slug";
 import remarkDirective from "remark-directive"; /* Handle directives */
 import remarkMath from "remark-math";
+import { remarkLqip } from "./src/plugins/remark-lqip.mjs";
+import { remarkWikiLink } from "./src/plugins/remark-wiki-link.js";
 import rehypeCallouts from "rehype-callouts";
 import remarkSectionize from "remark-sectionize";
 import { expressiveCodeConfig, siteConfig } from "./src/config";
@@ -184,6 +186,7 @@ export default defineConfig({
 				if (pathname === "/bangumi/" && !siteConfig.pages.bangumi) {
 					return false;
 				}
+				if (pathname.startsWith("/projects/") && !siteConfig.pages.projects) return false;
 				if (pathname === "/gallery/" && !siteConfig.pages.gallery) {
 					return false;
 				}
@@ -196,6 +199,8 @@ export default defineConfig({
 	markdown: {
 		remarkPlugins: [
 			remarkMath,
+			remarkWikiLink,
+			remarkLqip,
 			remarkReadingTime,
 			remarkImageGrid,
 			remarkExcerpt,

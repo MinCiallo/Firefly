@@ -1,0 +1,367 @@
+{
+  "public:apple-touch-icon.png": {
+    "colors": "30394f2225311e222c",
+    "width": 180,
+    "height": 180
+  },
+  "public:assets/images/sakura.png": {
+    "colors": "f6c5d8f5c2d7f7d3df",
+    "width": 328,
+    "height": 304
+  },
+  "public:assets/images/sponsor/alipay.png": {
+    "colors": "878686908f8facabac",
+    "width": 495,
+    "height": 495
+  },
+  "public:assets/images/sponsor/wechat.png": {
+    "colors": "e7dde1e8e1e5eae0de",
+    "width": 585,
+    "height": 585
+  },
+  "public:gallery/otomedomain/otomedomain1.jpg": {
+    "colors": "83799cb7c8d98a7c92",
+    "width": 3840,
+    "height": 2160
+  },
+  "public:gallery/otomedomain/otomedomain2.jpg": {
+    "colors": "efe4e2e0cbcecbb7c3",
+    "width": 1920,
+    "height": 1080
+  },
+  "public:gallery/otomedomain/otomedomain3.jpg": {
+    "colors": "c1a1bdaf879ca28cac",
+    "width": 1903,
+    "height": 1080
+  },
+  "public:gallery/otomedomain/otomedomain4.jpg": {
+    "colors": "d2b9c8d4adaaa990a9",
+    "width": 2560,
+    "height": 1440
+  },
+  "public:gallery/otomedomain/otomedomain5.jpg": {
+    "colors": "ebd1cee7c6c3dacccf",
+    "width": 1440,
+    "height": 809
+  },
+  "public:gallery/otomedomain/otomedomain6.jpg": {
+    "colors": "d1b4bbcbbac7a1828d",
+    "width": 950,
+    "height": 534
+  },
+  "public:gallery/sana/mobile1.jpg": {
+    "colors": "bdb7c0a8879ab28c9c",
+    "width": 1445,
+    "height": 2679
+  },
+  "public:gallery/sana/mobile2.jpg": {
+    "colors": "c89fa6c9a6add1c1c5",
+    "width": 832,
+    "height": 1216
+  },
+  "public:gallery/sana/mobile3.jpg": {
+    "colors": "daa5aebf8490dcc6ce",
+    "width": 1080,
+    "height": 1661
+  },
+  "public:gallery/sana/mobile4.jpg": {
+    "colors": "c895aadab2c0c8bfcf",
+    "width": 2894,
+    "height": 4093
+  },
+  "public:gallery/sana/mobile5.jpg": {
+    "colors": "6f6a975260856b597b",
+    "width": 2047,
+    "height": 2919
+  },
+  "public:gallery/sana/mobile6.jpg": {
+    "colors": "d796b1d3a7c3cba8be",
+    "width": 1468,
+    "height": 2048
+  },
+  "public:gallery/sana/mobile7.jpg": {
+    "colors": "a7728ae2bcc9dad4df",
+    "width": 1448,
+    "height": 2048
+  },
+  "public:gallery/sana/mobile8.jpg": {
+    "colors": "cfb0b8cfb1b6b1999f",
+    "width": 1417,
+    "height": 2048
+  },
+  "public:gallery/sana/sana1.jpg": {
+    "colors": "d8bcc6d7c5cdc9c3cc",
+    "width": 1000,
+    "height": 1208
+  },
+  "public:gallery/sana/sana10.jpg": {
+    "colors": "a1a5b9929e9bb1b6ad",
+    "width": 3500,
+    "height": 2371
+  },
+  "public:gallery/sana/sana2.jpg": {
+    "colors": "dccacfc6b7bfdcd9dd",
+    "width": 900,
+    "height": 1200
+  },
+  "public:gallery/sana/sana3.jpg": {
+    "colors": "a1a5b9929e9bb1b6ad",
+    "width": 3500,
+    "height": 2371
+  },
+  "public:gallery/sana/sana6.jpg": {
+    "colors": "cdaab9dac0cdd9ccd2",
+    "width": 900,
+    "height": 1273
+  },
+  "public:gallery/sana/sana7.jpg": {
+    "colors": "e3d9e3ecdfe7dfcbcf",
+    "width": 1038,
+    "height": 1200
+  },
+  "public:gallery/sana/sana8.jpg": {
+    "colors": "deb3bfcf9aabc8a8b9",
+    "width": 3500,
+    "height": 4000
+  },
+  "public:gallery/sana/sana9.jpg": {
+    "colors": "959fa8829191717068",
+    "width": 2452,
+    "height": 1760
+  },
+  "public:images/icp-filing.png": {
+    "colors": "f1f3f4f8f8faf7f8f9",
+    "width": 1252,
+    "height": 628
+  },
+  "public:images/og-default.jpg": {
+    "colors": "ada7b592a0a3bcbdb0",
+    "width": 1200,
+    "height": 630
+  },
+  "public:images/sana/mobile1.jpg": {
+    "colors": "bdb7c0a8879ab28c9c",
+    "width": 1445,
+    "height": 2679
+  },
+  "public:images/sana/mobile2.jpg": {
+    "colors": "c89fa6c9a6add1c1c5",
+    "width": 832,
+    "height": 1216
+  },
+  "public:images/sana/mobile3.jpg": {
+    "colors": "daa5aebf8490dcc6ce",
+    "width": 1080,
+    "height": 1661
+  },
+  "public:images/sana/mobile4.jpg": {
+    "colors": "c895aadab2c0c8bfcf",
+    "width": 2894,
+    "height": 4093
+  },
+  "public:images/sana/mobile5.jpg": {
+    "colors": "6f6a975260856b597b",
+    "width": 2047,
+    "height": 2919
+  },
+  "public:images/sana/mobile6.jpg": {
+    "colors": "d796b1d3a7c3cba8be",
+    "width": 1468,
+    "height": 2048
+  },
+  "public:images/sana/mobile7.jpg": {
+    "colors": "a7728ae2bcc9dad4df",
+    "width": 1448,
+    "height": 2048
+  },
+  "public:images/sana/mobile8.jpg": {
+    "colors": "cfb0b8cfb1b6b1999f",
+    "width": 1417,
+    "height": 2048
+  },
+  "public:images/sana/sana1.jpg": {
+    "colors": "d8bcc6d7c5cdc9c3cc",
+    "width": 1000,
+    "height": 1208
+  },
+  "public:images/sana/sana10.jpg": {
+    "colors": "a1a5b9929e9bb1b6ad",
+    "width": 3500,
+    "height": 2371
+  },
+  "public:images/sana/sana2.jpg": {
+    "colors": "dccacfc6b7bfdcd9dd",
+    "width": 900,
+    "height": 1200
+  },
+  "public:images/sana/sana3.jpg": {
+    "colors": "a1a5b9929e9bb1b6ad",
+    "width": 3500,
+    "height": 2371
+  },
+  "public:images/sana/sana6.jpg": {
+    "colors": "cdaab9dac0cdd9ccd2",
+    "width": 900,
+    "height": 1273
+  },
+  "public:images/sana/sana7.jpg": {
+    "colors": "e3d9e3ecdfe7dfcbcf",
+    "width": 1038,
+    "height": 1200
+  },
+  "public:images/sana/sana8.jpg": {
+    "colors": "deb3bfcf9aabc8a8b9",
+    "width": 3500,
+    "height": 4000
+  },
+  "public:images/sana/sana9.jpg": {
+    "colors": "959fa8829191717068",
+    "width": 2452,
+    "height": 1760
+  },
+  "src:assets/images/DesktopWallpaper/sana1.avif": {
+    "colors": "c6cbe4d9d7e3dcd0d7",
+    "width": 2560,
+    "height": 1440
+  },
+  "src:assets/images/MobileWallpaper/sana2.avif": {
+    "colors": "aeb0cedec7d8cdbbbe",
+    "width": 1080,
+    "height": 1440
+  },
+  "src:assets/images/avatar.avif": {
+    "colors": "d49eaacea0afcca4b3",
+    "width": 824,
+    "height": 824
+  },
+  "src:assets/images/cover.avif": {
+    "colors": "7c6f966a628a816e82",
+    "width": 3840,
+    "height": 2160
+  },
+  "src:assets/images/firefly.png": {
+    "colors": "ae667da55a74b28397",
+    "width": 490,
+    "height": 647
+  },
+  "src:assets/images/photo1.png": {
+    "colors": "c6cbe4d9d7e3dcd0d7",
+    "width": 2560,
+    "height": 1440
+  },
+  "src:content/posts/Mutsura-Yūto.png": {
+    "colors": "263c5f202e4f382135",
+    "width": 2560,
+    "height": 1440
+  },
+  "src:content/posts/Yarai-Miu.png": {
+    "colors": "753f675922446c3e65",
+    "width": 2560,
+    "height": 1440
+  },
+  "src:content/posts/images/1.avif": {
+    "colors": "c0babec4bfc3e0e0de",
+    "width": 2201,
+    "height": 1238
+  },
+  "src:content/posts/images/both-grid.avif": {
+    "colors": "d5d6d3e6e7e3d8d9e3",
+    "width": 2192,
+    "height": 1233
+  },
+  "src:content/posts/images/both-list.avif": {
+    "colors": "e5e7e4e6e8e7e3e3e5",
+    "width": 2192,
+    "height": 1233
+  },
+  "src:content/posts/images/firefly1.avif": {
+    "colors": "d4d7e5cdc4d7baaec9",
+    "width": 3328,
+    "height": 1872
+  },
+  "src:content/posts/images/firefly2.avif": {
+    "colors": "7588a28a8f989e8d88",
+    "width": 4096,
+    "height": 2212
+  },
+  "src:content/posts/images/firefly3.avif": {
+    "colors": "7c6f966a628a816e81",
+    "width": 3840,
+    "height": 2160
+  },
+  "src:content/posts/images/github.avif": {
+    "colors": "3a3a3be6e7e7eae9e9",
+    "width": 2144,
+    "height": 1086
+  },
+  "src:content/posts/images/left-grid3.avif": {
+    "colors": "d7d9d9d6daddd8e1e3",
+    "width": 2192,
+    "height": 1233
+  },
+  "src:content/posts/images/left-list.avif": {
+    "colors": "e9edeae3e6e3dddde1",
+    "width": 2192,
+    "height": 1233
+  },
+  "src:content/posts/images/masonry.avif": {
+    "colors": "e4e6e4ecefebd3d1d2",
+    "width": 2192,
+    "height": 1233
+  },
+  "src:content/posts/images/obsidian.avif": {
+    "colors": "3a4145dce3e6e8ded8",
+    "width": 2144,
+    "height": 1320
+  },
+  "src:content/posts/images/right-grid2.avif": {
+    "colors": "cbcdcddddcd9d8d7db",
+    "width": 2192,
+    "height": 1233
+  },
+  "src:content/posts/images/vitepress.avif": {
+    "colors": "3d3d43e1e1e7ebe0da",
+    "width": 2144,
+    "height": 1318
+  },
+  "src:content/posts/kazari.png": {
+    "colors": "83789cb7c7d88a7b92",
+    "width": 1920,
+    "height": 1080
+  },
+  "src:content/posts/minato.png": {
+    "colors": "d2b9c8d4adaaa990a9",
+    "width": 2560,
+    "height": 1440
+  },
+  "src:content/posts/photo1.png": {
+    "colors": "c6cbe4d9d7e3dcd0d7",
+    "width": 2560,
+    "height": 1440
+  },
+  "src:content/posts/photo2.png": {
+    "colors": "f6f6f6fcfdfcf5faf7",
+    "width": 1671,
+    "height": 875
+  },
+  "src:content/posts/photo3.png": {
+    "colors": "3438453134412c2f3b",
+    "width": 1443,
+    "height": 1110
+  },
+  "src:content/posts/photo4.png": {
+    "colors": "6068a04b548d7b8fcb",
+    "width": 1232,
+    "height": 706
+  },
+  "src:content/posts/photo5.png": {
+    "colors": "c1a1bdaf879ca28cac",
+    "width": 1903,
+    "height": 1080
+  },
+  "src:content/posts/photo6.png": {
+    "colors": "a55f6f9e6a6c9d8e88",
+    "width": 2560,
+    "height": 1440
+  }
+}

@@ -48,6 +48,8 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 		url: "/content/",
 		icon: "material-symbols:info",
 		children: [
+			{ name: "系列", url: "/series/", icon: "material-symbols:layers" },
+			...(siteConfig.pages.projects ? [{ name: "项目", url: "/projects/", icon: "material-symbols:rocket-launch" }] : []),
 			// 订阅
 			{
 				name: "订阅",

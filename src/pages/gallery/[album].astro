@@ -1,4 +1,5 @@
 ---
+import { getLqipProps } from "@/utils/lqip-utils";
 import { Icon } from "astro-icon/components";
 import PhotoCard from "@/components/pages/gallery/PhotoCard.astro";
 import { galleryConfig, siteConfig } from "@/config";
@@ -28,6 +29,7 @@ if (!albumMeta) {
 
 const photos = scanAlbumPhotos(albumMeta.id);
 const cover = getAlbumCover(albumMeta, photos);
+const coverPreview = cover ? getLqipProps(cover) : undefined;
 const columnWidth = galleryConfig.columnWidth || 240;
 ---
 
@@ -35,7 +37,7 @@ const columnWidth = galleryConfig.columnWidth || 240;
   <!-- 相册封面横幅 -->
   <div class="w-full rounded-(--radius-large) overflow-hidden relative">
     {cover ? (
-      <div class="relative w-full min-h-[260px] sm:min-h-[280px] md:min-h-[320px] flex flex-col justify-between p-5 sm:p-6">
+      <div data-lqip style={coverPreview?.style} class="relative w-full min-h-[260px] sm:min-h-[280px] md:min-h-[320px] flex flex-col justify-between p-5 sm:p-6">
         <img
           src={cover}
           alt={albumMeta.name}

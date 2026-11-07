@@ -20,6 +20,7 @@ type KeyPage = {
 const KEY_PAGES: KeyPage[] = [
 	{ labelKey: I18nKey.home, path: "/" },
 	{ labelKey: I18nKey.archive, path: "/archive/" },
+	{ labelKey: I18nKey.series, path: "/series/" },
 	{ labelKey: I18nKey.about, path: "/about/" },
 	{
 		labelKey: I18nKey.friends,
