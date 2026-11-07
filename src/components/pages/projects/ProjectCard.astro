@@ -12,6 +12,7 @@ interface Props {
 	title: string;
 	description?: string;
 	image: string;
+	icon?: string;
 	basePath?: string;
 	tags?: string[];
 	published?: Date;
@@ -24,6 +25,7 @@ const {
 	title,
 	description,
 	image,
+	icon,
 	basePath = "/",
 	tags,
 	published,
@@ -57,7 +59,11 @@ const coverClass = gridCoverFullWidth
 >
   <!-- 封面（在上） -->
   <a href={detailUrl} aria-label={title} class={coverClass}>
-    {image ? (
+    {icon ? (
+      <div class="w-full h-full flex items-center justify-center bg-(--primary)/5">
+        <img src={url(icon)} alt={title} width="112" height="112" loading="lazy" decoding="async" class="w-28 h-28 object-contain" style="image-rendering: pixelated;" />
+      </div>
+    ) : image ? (
       <CoverImage
         src={image}
         basePath={basePath}

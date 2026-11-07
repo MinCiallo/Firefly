@@ -219,6 +219,11 @@
     "width": 2452,
     "height": 1760
   },
+  "public:projects/dustbin-icon.png": {
+    "colors": "47494b43444638393b",
+    "width": 128,
+    "height": 128
+  },
   "src:assets/images/DesktopWallpaper/sana1.avif": {
     "colors": "c6cbe4d9d7e3dcd0d7",
     "width": 2560,

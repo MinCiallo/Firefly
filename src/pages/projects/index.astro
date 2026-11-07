@@ -28,6 +28,7 @@ const projectMeta = projects.map((p) => ({
 	title: p.data.title,
 	description: p.data.description,
 	image: p.data.image,
+	icon: p.data.icon,
 	basePath: getFileDirFromPath(p.filePath || ""),
 	tags: p.data.tags,
 	published: p.data.published,
@@ -104,6 +105,7 @@ const statusFilters = PROJECT_STATUS_KEYS.map((key) => {
 						title={p.title}
 						description={p.description}
 						image={p.image}
+						icon={p.icon}
 						basePath={p.basePath}
 						tags={p.tags}
 						published={p.published}

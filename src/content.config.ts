@@ -54,6 +54,7 @@ const projectsCollection = defineCollection({
         order: z.number().optional(),
         description: z.string().default(""),
         image: z.string().default(""),
+        icon: z.string().default(""),
         tags: z.array(z.string()).default([]),
         status: z.string().default(""),
         lang: z.string().default(""),

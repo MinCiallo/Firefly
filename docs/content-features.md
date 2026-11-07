@@ -31,6 +31,7 @@ status: developing
 tags: [Astro]
 order: 1
 image: ../../assets/images/cover.avif
+icon: /projects/dustbin-icon.png
 draft: false
 link:
   - label: GitHub
@@ -38,6 +39,8 @@ link:
     value: https://github.com/MinCiallo/Firefly
 ---
 ```
+
+icon 可选，用于显示项目方形图标；填写后列表优先显示图标，不裁切成横幅。
 
 状态支持 planning、developing、published、archived，也可填写自定义文字。order 越大越靠前；未设置时按发布日期排序。pages.projects 控制项目页开关。
 
@@ -60,7 +63,7 @@ import { Badge, Steps, StepItem, Timeline, TimelineItem, TabGroup } from "@/comp
 </Timeline>
 ```
 
-TabGroup 使用 labels 数组和 client:load，每个直接子块对应一个标签；代码块之间留空行。键盘左右方向键、Home、End 可切换标签。实际展示见 /projects/blog/。
+TabGroup 使用 labels 数组和 client:load，每个直接子块对应一个标签；代码块之间留空行。键盘左右方向键、Home、End 可切换标签。可在任意文章或项目的 .mdx 文件中使用。
 
 ## Wiki Link
 

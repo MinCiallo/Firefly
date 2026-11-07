@@ -42,9 +42,11 @@ const description = "最近在听的音乐记录";
 
     </div>
   </div>
-</MainGridLayout>
 
 <script is:inline>
+(function () {
+  if (typeof window.__initMusic === "function") { window.__initMusic(); return; }
+  let pendingLoad = null;
   const LFM_API = "https://api.minciallo.top";
 
   function timeAgo(uts) {
@@ -104,16 +106,20 @@ const description = "最近在听的音乐记录";
     });
   }
 
-  async function loadTracks() {
+  async function refreshTracks() {
     const nowPlaying = document.getElementById("now-playing");
     const list = document.getElementById("track-list");
-    if (!list) return;
+    if (!list || !nowPlaying) return;
 
     try {
       const res = await fetch(`${LFM_API}/api/lastfm/recent`);
-      const data = res.ok ? await res.json() : null;
+      if (!res.ok) throw new Error("Recent tracks unavailable");
+      const data = await res.json();
+      if (!list.isConnected || !nowPlaying.isConnected) return;
       const tracks = data?.recenttracks?.track;
       if (!tracks || !tracks.length) {
+        nowPlaying.replaceChildren();
+        nowPlaying.classList.add("hidden");
         list.innerHTML = '<div class="text-sm text-neutral-400 py-8 text-center">暂无播放记录</div>';
         return;
       }
@@ -129,6 +135,9 @@ const description = "最近在听的音乐记录";
         coverMap.set(t, cover || getImage(t));
       }));
 
+      if (!list.isConnected || !nowPlaying.isConnected) return;
+      nowPlaying.replaceChildren();
+      nowPlaying.classList.add("hidden");
       // 正在播放卡片
       if (np) {
         const npCover = coverMap.get(np);
@@ -178,8 +187,21 @@ const description = "最近在听的音乐记录";
       `).join("");
 
     } catch (err) {
+      if (!list.isConnected) return;
       list.innerHTML = '<div class="text-sm text-red-400 py-8 text-center">加载失败，请检查后端服务</div>';
     }
+  }
+
+  function loadTracks() {
+    const list = document.getElementById("track-list");
+    if (!list) return Promise.resolve();
+    if (pendingLoad) return pendingLoad;
+    pendingLoad = refreshTracks().finally(() => {
+      pendingLoad = null;
+      // A request may finish after Swup has replaced the original page.
+      if (document.getElementById("track-list") && document.getElementById("track-list") !== list) loadTracks();
+    });
+    return pendingLoad;
   }
 
   window.__initMusic = loadTracks;
@@ -192,4 +214,6 @@ const description = "最近在听的音乐记录";
   document.addEventListener("swup:contentReplaced", () => {
     setTimeout(loadTracks, 200);
   });
+})();
 </script>
+</MainGridLayout>

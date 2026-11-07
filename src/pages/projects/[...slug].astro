@@ -18,7 +18,7 @@ export async function getStaticPaths() {
 }
 const { entry } = Astro.props;
 const { Content, headings } = await render(entry);
-const { title, description, image, tags, published, status, link } = entry.data;
+const { title, description, image, icon, tags, published, status, link } = entry.data;
 const statusMeta = getProjectStatusMeta(status);
 ---
 <MainGridLayout title={title} description={description || title} headings={headings}>
@@ -27,7 +27,10 @@ const statusMeta = getProjectStatusMeta(status);
             <Icon name="material-symbols:arrow-back" />{i18n(I18nKey.projectBack)}
         </a>
         <header class="mb-6">
+            <div class="flex items-center gap-4">
+                {icon && <img src={url(icon)} alt="" width="64" height="64" class="w-16 h-16 object-contain shrink-0" style="image-rendering: pixelated;" />}
             <h1 class="text-3xl font-bold text-black/90 dark:text-white/90" data-pagefind-meta="title">{title}</h1>
+            </div>
             <div class="flex flex-wrap gap-3 items-center my-3 text-sm text-black/60 dark:text-white/60">
                 <time datetime={published.toISOString()}>{formatDateToYYYYMMDD(published)}</time>
                 {status && <span class:list={["rounded-full px-3 py-1", statusMeta.className]}>{statusMeta.label}</span>}

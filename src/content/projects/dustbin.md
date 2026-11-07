@@ -1,5 +1,6 @@
 ---
 title: Dustbin-Mod
+icon: /projects/dustbin-icon.png
 published: 2026-09-20
 description: AUNPP-CN 开发的 Minecraft Fabric 模组，将到期掉落物分类收进垃圾桶，方便玩家找回。
 status: published
